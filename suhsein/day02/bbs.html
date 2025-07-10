@@ -151,25 +151,18 @@
         }
 
         if (password !== passwordConfirm) {
-            alert(
-                "비밀번호가 일치하지 않습니다."
-            );
-            return;
+          alert("비밀번호가 일치하지 않습니다.");
+          return;
         }
 
         alert("게시글 작성이 완료되었습니다.");
       });
 
-      function equalityValidation(e) {
-        const password = $password.value.trim();
-        const passwordConfirm = $passwordConfirm.value.trim();
+    function equalityValidation(e) {
+      const password = $password.value.trim();
+      const passwordConfirm = $passwordConfirm.value.trim();
 
-        if (password === passwordConfirm) {
-            $message.style.display = "none";
-        } else {
-            $message.style.display = "block";
-            return;
-        }
-      }
+      $message.style.display = password === passwordConfirm ? "none" : "block";
+    }
   </script>
 </html>
