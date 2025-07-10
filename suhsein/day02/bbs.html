@@ -103,22 +103,12 @@
   </body>
 
   <script>
+    const $password = document.getElementById("password");
     const $passwordConfirm = document.getElementById("passwordConfirm");
     const $message = document.getElementById("message");
 
-    $passwordConfirm.addEventListener("keyup", function (e) {
-      const password = document.getElementById("password").value.trim();
-      const passwordConfirm = document
-        .getElementById("passwordConfirm")
-        .value.trim();
-
-      if (password === passwordConfirm) {
-        $message.style.display = "none";
-      } else {
-        $message.style.display = "block";
-        return;
-      }
-    });
+    $password.addEventListener("keyup", equalityValidation);
+    $passwordConfirm.addEventListener("keyup", equalityValidation);
 
     document
       .getElementById("writeForm")
@@ -150,7 +140,8 @@
           return;
         }
 
-        const password = document.getElementById("password").value.trim();
+        const password = $password.value.trim();
+        const passwordConfirm = $passwordConfirm.value.trim();
 
         if (!password || password.length < 6 || password.length > 12) {
           alert(
@@ -159,7 +150,26 @@
           return;
         }
 
+        if (password !== passwordConfirm) {
+            alert(
+                "비밀번호가 일치하지 않습니다."
+            );
+            return;
+        }
+
         alert("게시글 작성이 완료되었습니다.");
       });
+
+      function equalityValidation(e) {
+        const password = $password.value.trim();
+        const passwordConfirm = $passwordConfirm.value.trim();
+
+        if (password === passwordConfirm) {
+            $message.style.display = "none";
+        } else {
+            $message.style.display = "block";
+            return;
+        }
+      }
   </script>
 </html>
