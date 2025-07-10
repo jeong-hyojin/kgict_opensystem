@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게시판</title>
+    <style>
+      .container {
+        font-weight: 300;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 500px;
+      }
+      .field {
+        margin-top: 15px;
+      }
+      label {
+        display: flex;
+        font-size: 1.1rem;
+        font-weight: 300;
+        flex-direction: column;
+      }
+      textarea {
+        font-size: 1rem;
+        width: 400px;
+        min-height: 400px;
+        border-width: 0;
+        overflow-y: scroll;
+        box-shadow: rgba(0, 0, 0, 0.08) 2.4px 2.4px 3.2px;
+        resize: none;
+      }
+      input {
+        font-size: 1rem;
+        justify-content: end;
+        width: 400px;
+        height: 30px;
+        border-width: 0;
+        border-radius: 5px;
+        box-shadow: rgba(0, 0, 0, 0.08) 2.4px 2.4px 3.2px;
+      }
+
+      #message {
+        color: red;
+      }
+
+      #submit {
+        margin-top: 30px;
+        background-color: antiquewhite;
+        width: 80px;
+        height: auto;
+        font-size: 1rem;
+        font-weight: 400;
+        box-sizing: border-box;
+        border-radius: 5px;
+        justify-self: end;
+        border: none;
+        padding: 8px;
+      }
+
+      #submit:hover {
+        background-color: bisque;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2 id="container-title">게시판 글쓰기</h2>
+      <form id="writeForm">
+        <div class="field">
+          <label for="writer">작성자</label>
+          <input type="text" id="writer" name="writer" />
+        </div>
+
+        <div class="field">
+          <label for="title">제목</label>
+          <input type="text" id="title" name="title" />
+        </div>
+
+        <div class="field">
+          <label for="content">내용</label>
+          <textarea id="content" name="content"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="passowrd">비밀번호</label>
+          <input type="password" id="password" name="password" />
+        </div>
+
+        <div class="field">
+          <label for="passowrdConfirm">비밀번호 확인</label>
+          <input type="password" id="passwordConfirm" name="passwordConfirm" />
+          <div id="message" value="message" style="visibility: visible">
+            비밀번호가 일치하지 않습니다.
+          </div>
+        </div>
+
+        <button type="submit" id="submit">글쓰기</button>
+      </form>
+    </div>
+  </body>
+
+  <script>
+    const $password = document.getElementById("password");
+    const $passwordConfirm = document.getElementById("passwordConfirm");
+    const $message = document.getElementById("message");
+
+    $password.addEventListener("keyup", equalityValidation);
+    $passwordConfirm.addEventListener("keyup", equalityValidation);
+
+    document
+      .getElementById("writeForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const writer = document.getElementById("writer").value.trim();
+        const title = document.getElementById("title").value.trim();
+        const content = document.getElementById("content").value.trim();
+
+        const writerRegex = /^[ㄱ-ㅎ가-힣]+$/;
+        const passwordRegex = /^[a-zA-Z0-9]+$/;
+
+        if (!writer) {
+          alert("작성자는 빈 칸일 수 없습니다.");
+          return;
+        } else if (!writerRegex.test(writer)) {
+          alert("작성자 입력값은 한글만 허용됩니다.");
+          return;
+        }
+
+        if (!title) {
+          alert("제목은 빈 칸일 수 없습니다.");
+          return;
+        }
+
+        if (!content || content.length < 20) {
+          alert("내용은 최소 20자 이상으로 입력해주세요.");
+          return;
+        }
+
+        const password = $password.value.trim();
+        const passwordConfirm = $passwordConfirm.value.trim();
+
+        if (!password || password.length < 6 || password.length > 12) {
+          alert(
+            "비밀번호는 6자 이상 12자 이하의 영문/숫자 조합으로 입력해주세요."
+          );
+          return;
+        }
+
+        if (password !== passwordConfirm) {
+          alert("비밀번호가 일치하지 않습니다.");
+          return;
+        }
+
+        alert("게시글 작성이 완료되었습니다.");
+      });
+
+    function equalityValidation(e) {
+      const password = $password.value.trim();
+      const passwordConfirm = $passwordConfirm.value.trim();
+
+      $message.style.display = password === passwordConfirm ? "none" : "block";
+    }
+  </script>
+</html>
