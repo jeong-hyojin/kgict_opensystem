@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>postForm</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>게시글 작성 페이지</h2>
+
+    <form id="postForm">
+        <div>
+            <label for = "username"> 작성자 </label><br/>
+            <input type="text" id = "username" name = "username"/>
+        </div>
+
+        <div>
+            <label for = "title"> 제목 </label><br/>
+            <input type="text" id = "title" name = "title"/>
+        </div>
+
+        <div>
+            <label for="content"> 내용 </label><br/>
+            <textarea id="content" name="content" rows="5" cols="50"></textarea>
+        </div>
+
+        <div class="password-box">
+            <div>
+                <label for="password">비밀번호</label><br/>
+                <input type="password" id="password" name="password"/>
+            </div>
+            <div>
+                <label for="passwordConfirm">비밀번호 확인</label><br/>
+                <input type="password" id="passwordConfirm" name="passwordConfirm"/>
+                <span id="passwordError" class="error-text" style="display: none;">비밀번호가 일치하지 않습니다.</span>
+            </div>
+        </div>
+
+        <button type = "submit"> 제출하기 </button>
+    </form>
+</body>
+<script src="main.js"></script>
+</html>
