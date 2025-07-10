@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>게시판 글쓰기</title>
+  <style>
+    body {
+        background-color: #f9fafb;
+        font-family: 'Segoe UI', sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;   
+        align-items: center;      
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .form-container {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 30px 40px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #5b2e5a;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #9826be;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.85em;
+      margin-top: -15px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    button[type="submit"] {
+      background-color: #9826be;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+    
+    #passwordConfirm::placeholder {
+    color: rgb(233, 127, 127);
+  }
+  </style>
+</head>
+<body>
+  <h2>게시판 글쓰기</h2>
+  <form id="postForm">
+    <label>
+      작성자:
+      <input type="text" id="writer" >
+    </label>
+
+    <label>
+      제목:
+      <input type="text" id="title" >
+    </label>
+
+    <label>
+      내용:
+      <textarea id="content" rows="5" cols="40" ></textarea>
+    </label>
+
+    <label>
+      비밀번호:
+      <input type="password" id="password" >
+    </label>
+
+    <label>
+      비밀번호 확인:
+      <input type="password" id="passwordConfirm" placeholder="비밀번호를 한 번 더 입력해 주세요" >
+    </label>
+    <span id="pwMessage" class="error"></span>
+
+    <button type="submit">작성하기</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('postForm');
+    const writer = document.getElementById('writer');
+    const title = document.getElementById('title');
+    const content = document.getElementById('content');
+    const password = document.getElementById('password');
+    const passwordConfirm = document.getElementById('passwordConfirm');
+    const pwMessage = document.getElementById('pwMessage');
+
+    // 한글 1자 이상
+    const koreanRegex = /^[가-힣\s]+$/;
+
+    // 비밀번호 정규식 (6~12자, 영문 + 숫자)
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,12}$/;
+
+    passwordConfirm.addEventListener('input', () => {
+      if (passwordConfirm.value !== password.value) {
+        pwMessage.innerText = '비밀번호가 일치하지 않습니다.';
+      } else {
+        pwMessage.innerText = '';
+      }
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (!writer.value.trim() || !koreanRegex.test(writer.value)) {
+        alert('작성자를 빈값이 아닌 한글로 입력해주세요.');
+        writer.focus();
+        return;
+      }
+
+      if (!title.value.trim()) {
+        alert('제목을 입력해주세요.');
+        return;
+      }
+
+      if (!content.value.trim() || content.value.trim().length < 20) {
+        alert('내용은 20자 이상 입력해주세요.');
+        content.focus();
+        return;
+      }
+
+      if (!passwordRegex.test(password.value)) {
+        alert('비밀번호는 6~12자, 영문+숫자 조합이어야 합니다.');
+        password.focus();
+        return;
+      }
+
+      if (passwordConfirm.value !== password.value) {
+        alert('비밀번호가 일치하지 않습니다.');
+        passwordConfirm.focus();
+        return;
+      }
+
+      alert('글이 성공적으로 등록되었습니다!');
+      form.reset();
+      pwMessage.innerText = '';
+    });
+  </script>
+</body>
+</html>
