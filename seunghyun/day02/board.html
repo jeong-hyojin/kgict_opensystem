@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <title>게시글 쓰기</title>
+  </head>
+
+  <body>
+        <h2>게시글 작성하기</h2>
+        <form id="boardForm">
+            <div>
+                <label for="username">작성자</label></br>
+                <input type="text" id="username" name="username" required/> 
+            </div>
+
+            <div>
+                <label for="title">제목</label></br>
+                <input type="text" id="title" name="title" required /> 
+            </div>
+
+            <div>
+                <label for="content">내용</label></br>
+                <input type="text" id="content" name="content" required/> 
+            </div>
+
+            <div>
+                <label for="password">비밀번호</label><br>
+                <input type="password" id="password" name="password"/><br>   
+            </div>
+
+            <div>
+                <label for="password">비밀번호 확인</label><br>
+                <input type="password" id="passwordConfirm" name="password" minlength="8" maxlength="12"/>
+                <span id="passwordMsg" style="color: red;"></span>
+            </div>        
+
+            <button type="submit">제출하기</button>
+        </form>
+  </body>
+<script>
+  const form = document.getElementById("boardForm");
+  const passwordMsg = document.getElementById("passwordMsg");
+
+  passwordMsg.style.display = "none";
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault(); // 새로고침 방지
+
+    const username = document.getElementById("username").value.trim();
+    const title = document.getElementById("title").value.trim();
+    const content = document.getElementById("content").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const passwordConfirm = document.getElementById("passwordConfirm").value.trim();
+
+    // 작성자명 유효성 검사(한글만 가능)
+    const usernameRegex = /^[ㄱ-ㅎ가-힣]+$/;
+
+    // 비밀번호 유효성 검사(6~12자, 영문+숫자 조합)
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,12}$/;
+
+    if (!username || !usernameRegex.test(username)) {
+      alert("작성자명이 유효하지 않습니다.");
+      return;
+    }
+
+    if(!title){
+        alert("제목을 작성해주세요");
+        return;
+    }
+
+    if (content.length < 20) {
+      alert("내용은 최소 20자 이상 작성해야 합니다.");
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      alert("비밀번호는 영문과 숫자를 포함한 6~12자리여야 합니다.");
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      passwordMsg.style.display = "inline";
+      passwordMsg.innerText = "비밀번호가 일치하지 않습니다.";
+      return;
+    } 
+    else {
+      passwordMsg.style.display = "none";
+    }
+
+    alert("게시글 작성이 완료됐습니다.");
+    
+  });
+
+</script>
+
+
+
+</html>
