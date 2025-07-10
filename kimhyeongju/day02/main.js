@@ -2,7 +2,7 @@ document.getElementById("postForm").addEventListener("submit", handleSubmit);
 
 // 에러 메세지 이후, 비밀번호 확인란에 입력시 InnerText 제거
 document.getElementById("passwordConfirm").addEventListener("input", () => {
-    const errorMessage = document.getElementById("passwordError");
+    const errorMessage = document.getElementById("passwordConfirmError");
     errorMessage.style.display = "none";
 });
 
@@ -13,7 +13,7 @@ function handleSubmit(e) {
 
 
     if (data.password !== data.passwordConfirm) {
-        const errEl = document.getElementById("passwordError");
+        const errEl = document.getElementById("passwordConfirmError");
         errEl.style.display = "block";
         return;
     }
@@ -25,7 +25,7 @@ function handleSubmit(e) {
     }
 
     alert("게시글이 등록되었습니다.");
-    location.reload(true);
+    document.getElementById("postForm").reset();
 }
 
 function getData() {
@@ -40,6 +40,7 @@ function getData() {
 
 function isValid({ username, title, content, password }) {
     const usernameRegex = /^[가-힣]+$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/;
 
     if (!username) {
         return "작성자를 입력해주세요.";
@@ -53,8 +54,8 @@ function isValid({ username, title, content, password }) {
     if (content.length < 20) {
         return "내용은 최소 20자 이상이어야 합니다.";
     }
-    if (password.length < 6 || password.length > 12) {
-        return "비밀번호는 6자 이상 12자 이하로 입력해주세요.";
+    if (password.length < 6 || password.length > 12 || !passwordRegex.test(password)) {
+        return "비밀번호는 6자 이상 12자 이하이며, 영문과 숫자로 구성되어야 합니다.";
     }
     return null;
 }
