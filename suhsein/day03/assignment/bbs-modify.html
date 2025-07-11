@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게시판 수정하기</title>
+    <link rel="stylesheet" href="./bbs.css">
+  </head>
+
+  <body>
+    <div class="container">
+      <h2 id="container-title">게시판 글쓰기</h2>
+      <form id="writeForm">
+        <div class="field">
+          <label for="writer">작성자</label>
+          <input type="text" id="writer" name="writer" />
+        </div>
+
+        <div class="field">
+          <label for="title">제목</label>
+          <input type="text" id="title" name="title" />
+        </div>
+
+        <div class="field">
+          <label for="content">내용</label>
+          <textarea id="content" name="content"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="password">비밀번호</label>
+          <input type="password" id="password" name="password" />
+        </div>
+
+        <div class="field">
+          <label for="passwordConfirm">비밀번호 확인</label>
+          <input type="password" id="passwordConfirm" name="passwordConfirm" />
+          <div id="message" value="message" style="visibility: visible">
+            비밀번호가 일치하지 않습니다.
+          </div>
+        </div>
+
+        <button type="submit" id="submit">수정하기</button>
+      </form>
+    </div>
+    <script src="./bbs-modify.js"></script>
+  </body>
+</html>
