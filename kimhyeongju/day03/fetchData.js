@@ -8,9 +8,9 @@ export const getFetchData = async () => {
     
         // form 세팅
         let data = await response.json();
-        document.getElementById("username").value = data.userId;
-        document.getElementById("title").value = data.title;
-        document.getElementById("content").value = data.body;
+        document.getElementById("title").value     = data.title;
+        document.getElementById("content").value   = data.body;
+        document.getElementById("username").value  = data.userId;
     } catch(err) {
         console.error('error:', err);
     }
