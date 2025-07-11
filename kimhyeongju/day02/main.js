@@ -1,23 +1,26 @@
+//  폼 제출 이벤트
 document.getElementById("postForm").addEventListener("submit", handleSubmit);
 
-// 에러 메세지 이후, 비밀번호 확인란에 입력시 InnerText 제거
+// 비밀번호 확인 이벤트 : 에러 메세지 이후, 비밀번호 확인란에 입력시 InnerText 제거
 document.getElementById("passwordConfirm").addEventListener("input", () => {
     const errorMessage = document.getElementById("passwordConfirmError");
     errorMessage.style.display = "none";
 });
 
+// 폼 제출 핸들링
 function handleSubmit(e) {
     e.preventDefault();
 
     const data = getData();
 
-
+    // 비밀번호와 비밀번호 확인 데이터가 일치하지 않을시, InnerText 노출
     if (data.password !== data.passwordConfirm) {
         const errEl = document.getElementById("passwordConfirmError");
         errEl.style.display = "block";
         return;
     }
 
+    // validation 체크ㄴ
     const error = isValid(data);
     if (error) {
         alert(error);
@@ -28,17 +31,23 @@ function handleSubmit(e) {
     document.getElementById("postForm").reset();
 }
 
+// 폼 데이터 반환 메서드
 function getData() {
-    return {
-        username: document.getElementById("username").value.trim(),
-        title: document.getElementById("title").value.trim(),
-        content: document.getElementById("content").value.trim(),
-        password: document.getElementById("password").value.trim(),
-        passwordConfirm: document.getElementById("passwordConfirm").value.trim()
+     return {
+          username        : document.getElementById("username").value.trim()
+        , title           : document.getElementById("title").value.trim()
+        , content         : document.getElementById("content").value.trim()
+        , password        : document.getElementById("password").value.trim()
+        , passwordConfirm : document.getElementById("passwordConfirm").value.trim()
     };
 }
 
+// 폼 데이터 유휴성 검사 메서드
 function isValid({ username, title, content, password }) {
+    /*
+     * 작성자 정규표현식 (usernameRegex) : 한글만 입력 가능합니다.
+     * 비밀번호 정규표현식 (passwordRegex) : 영문과 숫자로 구성 가능합니다.
+     */
     const usernameRegex = /^[가-힣]+$/;
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/;
 
