@@ -106,7 +106,7 @@ function validatePasswordMatch() {
 fetch(API_URL)
   .then((res) => res.json())
   .then((data) => {
-    writer.value  = `사용자 ${data.userId}`;
+    writer.value  = data.userId;
     title.value   = data.title;
     content.value = data.body;
   })
