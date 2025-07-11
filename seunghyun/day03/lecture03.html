@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    //var 재선언 사용
+    var x = 10;
+    var x = 10;
+    console.log(x); //20
+
+    //let 재사용 불가
+    let y = 10;
+    //let y = 20; // Syntax Error
+    y = 20;     //재할당은 가능
+    console.log(y); //20
+
+    //const 재선언, 재할당 불가
+    const z = 10;
+    //const z = 20;   //Syntax Error
+    z = 20;         //Type Error
+    console.log(z);
+
+
+    /* 호스팅 차이 */
+    console.log(a); //Undefined (var는 hoisting + 초기화)
+    var a = 10;
+
+    console.log(b); //ReferenceError
+    let b = 20;
+
+    console.log(c); //ReferenceError
+    const c = 30;
+
+
+    /* setTimeout 실습 */
+    console.log('1번 작업 시작');
+
+    setTimeout(()=>{
+        console.log('2번 작업 (2초 뒤 실행)');
+    }, 2000);
+
+    console.log('3번 작업 끝');
+
+
+    /* Promise */
+
+
+
+
+</script>
+
+</html>

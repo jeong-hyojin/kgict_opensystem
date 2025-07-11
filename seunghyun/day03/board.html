@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8">
+    <title>게시글 쓰기</title>
+    <link rel="stylesheet" href="board.css">
+    <script defer src="board.js"></script>
+</head>
+
+<body>
+    <h2>게시판</h2>
+    <form id="boardForm">
+        <div>
+            <label for="username">작성자</label>
+            <input type="text" id="username" name="username" required />
+        </div>
+
+        <div>
+            <label for="title">제목</label>
+            <input type="text" id="title" name="title" required />
+        </div>
+
+        <div>
+            <label for="content">내용</label>
+            <textarea id="content" name="content" required></textarea>
+        </div>
+
+        <div>
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" /><br>
+        </div>
+
+        <div>
+            <label for="password">비밀번호 확인</label>
+            <input type="password" id="passwordConfirm" name="password" minlength="8" maxlength="12" />
+            <span id="passwordMsg"></span>
+        </div>
+
+        <button type="submit">제출하기</button>
+    </form>
+</body>
+
+</html>
