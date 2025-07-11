@@ -101,3 +101,14 @@ function validatePasswordMatch() {
   }
 }
 
+// [day03:과제] API 데이터 가져오기 및 폼에 세팅
+fetch("https://jsonplaceholder.typicode.com/posts/1")
+  .then((res) => res.json())
+  .then((data) => {
+    writer.value  = `사용자 ${data.userId}`;
+    title.value   = data.title;
+    content.value = data.body;
+  })
+  .catch((err) => {
+    console.error("데이터 로딩 실패:", err);
+});
