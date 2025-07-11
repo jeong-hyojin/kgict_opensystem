@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>게시판 글쓰기</title>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+
+  <body>
+    <h2>게시판 글쓰기</h2>
+
+    <form id="postForm" class="form-container">
+
+      <label>
+        작성자:          
+        <input type="text"     id="writer" />
+      </label>
+
+      <label>
+        제목:            
+        <input type="text"     id="title" />
+      </label>
+
+      <label>
+        내용:            
+        <textarea id="content" rows="5" cols="40"></textarea>
+      </label>
+
+      <label>
+        비밀번호:        
+        <input type="password" id="password" />
+      </label>
+
+      <label>
+        비밀번호 확인:   
+        <input type="password" id="passwordConfirm" placeholder="비밀번호를 한 번 더 입력해 주세요" />
+      </label>
+
+      <span   id="pwMessage" class="error"></span>
+      <button type="submit">수정하기</button>
+
+    </form>
+
+    <script src="main.js"></script>
+  </body>
+</html>
