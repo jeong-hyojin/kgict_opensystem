@@ -1,3 +1,5 @@
+import { getFetchData } from './fetchData.js';
+
 //  폼 제출 이벤트
 document.getElementById("postForm").addEventListener("submit", handleSubmit);
 
@@ -6,6 +8,9 @@ document.getElementById("passwordConfirm").addEventListener("input", () => {
     const errorMessage = document.getElementById("passwordConfirmError");
     errorMessage.style.display = "none";
 });
+
+// day03 과제 : fetch로 데이터 가져오기
+getFetchData();
 
 // 폼 제출 핸들링
 function handleSubmit(e) {
@@ -20,7 +25,7 @@ function handleSubmit(e) {
         return;
     }
 
-    // validation 체크ㄴ
+    // validation 체크
     const error = isValid(data);
     if (error) {
         alert(error);
