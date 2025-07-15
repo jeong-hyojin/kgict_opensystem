@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8">
+  <title>게시글 쓰기</title>
+</head>
+
+<body>
+  <h2>게시글 삭제하기</h2>
+  <form id="boardForm">
+    <div>
+      <label for="UUID">게시글 번호</label></br>
+      <input type="text" id="UUID" name="UUID" required />
+    </div>
+    <button type="submit">제출하기</button>
+  </form>
+</body>
+<script src="/js/common.js"></script>
+<script>
+  const form = document.getElementById("boardForm");
+
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault(); // 새로고침 방지
+
+    const UUID = document.getElementById("UUID").value.trim()
+
+    //유효성 검사
+    // UUID 검사
+    if (!ValidationUtil.isNotEmpty(UUID)) {
+      AlertUtil.showWarning("게시글 번호를 입력해주세요");
+      return;
+    }
+    
+    //fetch 서버 요청
+    fetch(`/boards/delete?UUID=${UUID}`, {
+      method: "DELETE"
+    })
+      .then(res => res.text())
+      .then(data => {
+        AlertUtil.showSuccess(data);
+        form.reset();
+      })
+      .catch(() => {
+        AlertUtil.showError("서버 오류가 발생했습니다. 다시 시도해주세요.");
+      });
+
+  });
+  
+</script>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>게시글 수정</title>
+</head>
+
+<body>
+  <h2>게시글 수정하기</h2>
+  <form id="boardForm">
+    <label for="UUID">게시글 번호</label><br />
+    <input type="text" id="UUID" required />
+    <button type="submit">기존 내용 불러오기</button>
+  </form>
+
+  <form id="updateForm" style="display: none;">
+  	<p>기존 UUID : 111</p>
+    <p>기존 내용: 기존 내용입니다.</p>
+    
+    <div>
+    	<label for="newUUID">수정할 UUID</label><br/>
+    	<input type="text" id="newUUID" required />
+    </div>
+    
+    <div>
+    	<label for="newContent">수정할 내용</label><br />
+    	<input type="text" id="newContent" required />
+    </div>
+    
+    <button type="submit">수정 제출</button>
+  </form>
+</body>
+
+<script src="/js/common.js"></script>
+<script>
+  const boardForm 		  = document.getElementById("boardForm");
+  const updateForm 		  = document.getElementById("updateForm");
+  const UUIDInput 		  = document.getElementById("UUID");
+  const newUUIDInput 	  = document.getElementById("newUUID");
+  const newContentInput   = document.getElementById("newContent");
+
+  //기존 게시글을 불러오는 이벤트
+  boardForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const UUID = UUIDInput.value.trim();
+
+    //유효성 검사
+    // UUID 검사
+    if (!ValidationUtil.isNotEmpty(UUID)) {
+      AlertUtil.showWarning("게시글 번호를 입력해주세요");
+      return;
+    }
+    
+    //fetch 요청으로 DB에서 값을 가져왔다고 가정
+    
+    //updateForm 보이기
+    updateForm.style.display = "block"; 
+  });
+
+  //게시글 수정하는 이벤트
+  updateForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    //수정할 내용 UUID, content
+    const oldUUID 		= UUIDInput.value.trim();
+    const newUUID 		= newUUIDInput.value.trim();
+    const newContent	= newContentInput.value.trim();
+
+    //유효성 검사
+    // UUID 검사
+    if (!ValidationUtil.isNotEmpty(newUUID)) {
+      AlertUtil.showWarning("게시글 번호를 입력해주세요");
+      return;
+    }
+      
+    // content 검사
+    if (!ValidationUtil.isNotEmpty(newContent)) {
+      AlertUtil.showWarning("내용을 입력해주세요");
+      return;
+    }
+
+    //fetch 서버 요청
+    fetch("/boards/update", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+    	oldUUID: oldUUID,    	  
+    	newUUID: newUUID,
+        content: newContent
+      })
+    })
+      .then(res => res.text())
+      .then(data => {
+        AlertUtil.showSuccess(data);
+        //boardForm.reset();
+        //updateForm.reset();
+        //updateForm.style.display = "none";
+      })
+      .catch(() => {
+        AlertUtil.showError("게시글 수정 중 오류가 발생했습니다.");
+      });
+  });
+</script>
+</html>
