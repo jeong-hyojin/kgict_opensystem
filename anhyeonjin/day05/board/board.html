@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>게시글 작성/수정/삭제</title>
+  <link rel="stylesheet" href="./main.css" />
+</head>
+<body>
+  <h2>게시글 작성</h2>
+  <form id="postForm">
+    <div id="uuidWrapper" style="display: none;">
+      <label for="uuid">게시글 ID</label>
+      <input type="text" id="uuid" />
+    </div>
+
+    <div>
+      <label for="title">제목</label>
+      <input type="text" id="title" required />
+    </div>
+
+    <div>
+      <label for="content">내용</label>
+      <textarea id="content" required></textarea>
+    </div>
+
+    <div>
+      <label for="password">비밀번호</label>
+      <input type="password" id="password" required />
+    </div>
+
+    <button type="submit" id="submitBtn">작성</button>
+    <button type="button" id="editBtn" disabled>수정</button>
+    <button type="button" id="deleteBtn" disabled>삭제</button>
+  </form>
+</body>
+
+<script src="/js/common.js"></script>
+<script src="/js/utils/ApiUtil.js"></script>
+
+<script>
+  const form = document.getElementById("postForm");
+  const uuidEl = document.getElementById("uuid");
+  const titleEl = document.getElementById("title");
+  const contentEl = document.getElementById("content");
+  const passwordEl = document.getElementById("password");
+  const submitBtn = document.getElementById("submitBtn");
+  const editBtn = document.getElementById("editBtn");
+  const deleteBtn = document.getElementById("deleteBtn");
+  const uuidWrapper = document.getElementById("uuidWrapper");
+
+  let mode = "write";
+
+  function isValidContent() {
+    const content = contentEl.value.trim();
+    if (!content || content.length < 10) {
+      AlertUtil.showWarning("내용은 10자 이상 입력해주세요");
+      contentEl.focus();
+      return false;
+    }
+    return true;
+  }
+
+  function isValidPassword() {
+    const password = passwordEl.value.trim();
+    if (!password || password.length < 4) {
+      AlertUtil.showWarning("비밀번호를 4자 이상 입력해주세요");
+      passwordEl.focus();
+      return false;
+    }
+    return true;
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    if (!isValidContent() || (mode === "write" && !isValidPassword())) return;
+
+    const content = contentEl.value.trim();
+    const uuid = uuidEl.value.trim();
+    const title = titleEl.value.trim();
+    const password = passwordEl.value.trim();
+
+    if (mode === "write") {
+      try {
+        const result = await ApiUtil.post("/board/write", { title, content, password });
+
+        uuidEl.value = result;
+        uuidWrapper.style.display = "block";
+
+        titleEl.disabled = true;
+        contentEl.disabled = true;
+        passwordEl.disabled = true;
+
+        submitBtn.disabled = true;
+        editBtn.disabled = false;
+        deleteBtn.disabled = false;
+        mode = "view";
+
+      } catch (e) {
+        AlertUtil.showError("작성 실패: " + (e.message || "오류 발생"));
+      }
+    } else if (mode === "edit") {
+    	  const uuid = uuidEl.value.trim();
+    	  if (!uuid) {
+    	    AlertUtil.showWarning("수정할 게시글 ID가 비어 있습니다.");
+    	    return;
+    	  }
+
+    	  try {
+    		  AlertUtil.showWarning("수정할 ");
+    	    const result = await ApiUtil.put("/board/update", { uuid, content });
+
+    	    if (result.code === "SUCCESS") {
+    	      AlertUtil.showSuccess(result.message);
+    	      contentEl.disabled = true;
+    	      uuidEl.disabled = true;
+    	      submitBtn.disabled = true;
+    	      submitBtn.textContent = "작성";
+    	      editBtn.disabled = false;
+    	      deleteBtn.disabled = false;
+    	      mode = "view";
+    	    } else {
+    	      AlertUtil.showWarning(result.message || "수정 실패");
+    	    }
+    	  } catch (e) {
+    	    AlertUtil.showError("수정 실패: " + (e.message || "오류 발생"));
+    	  }
+    	}
+
+  });
+
+  editBtn.addEventListener("click", function () {
+    uuidWrapper.style.display = "block";
+    uuidEl.disabled = true;
+    contentEl.disabled = false;
+    submitBtn.disabled = false;
+    submitBtn.textContent = "수정 완료";
+
+    titleEl.disabled = true;
+    passwordEl.disabled = true;
+
+    mode = "edit";
+  });
+
+  deleteBtn.addEventListener("click", async function () {
+    const uuid = uuidEl.value;
+    if (!uuid) return;
+
+    if (confirm("정말 삭제하시겠습니까?")) {
+      try {
+        await ApiUtil.del("/board/delete", { params: { uuid } });
+
+        uuidEl.value = "";
+        titleEl.value = "";
+        contentEl.value = "";
+        passwordEl.value = "";
+
+        titleEl.disabled = false;
+        contentEl.disabled = false;
+        passwordEl.disabled = false;
+        uuidEl.disabled = false;
+        uuidWrapper.style.display = "none";
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "작성";
+
+        editBtn.disabled = true;
+        deleteBtn.disabled = true;
+
+        mode = "write";
+      } catch (e) {
+        AlertUtil.showError("삭제 실패: " + (e.message || "오류 발생"));
+      }
+    }
+  });
+</script>
+</html>
