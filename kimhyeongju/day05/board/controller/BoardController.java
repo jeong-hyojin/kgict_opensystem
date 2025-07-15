@@ -88,7 +88,6 @@ public class BoardController{
 	    return ResponseEntity.ok(body);
 	}
 	
-	
 	@Data
 	public static class BoardCreateRequest {
 	    private String title;
@@ -101,10 +100,4 @@ public class BoardController{
 	    private String boardId;
 	    private String content;
 	}
-	
-	@Data
-	public static class BoardDeleteRequest {
-	    private String boardId;
-	}
-	
 }
