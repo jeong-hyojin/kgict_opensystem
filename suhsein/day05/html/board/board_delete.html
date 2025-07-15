@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <title>게시물 삭제</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"/>
+</head>
+<body class="container py-4">
+  <h2 class="mb-4">게시물 삭제</h2>
+  <form id="deleteForm" class="mb-3">
+    <div class="form-group">
+      <label for="deleteId">게시물 ID</label>
+      <input type="number" id="deleteId" name="deleteId" class="form-control" required/>
+    </div>
+    <button type="submit" class="btn btn-danger">게시물 삭제하기</button>
+  </form>
+</body>
+<script src="/js/common.js"></script>
+<script>
+  const deleteForm = document.getElementById("deleteForm");
+  
+  deleteForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+	
+    const id = document.getElementById("deleteId").value.trim();
+    if (!ValidationUtil.isNotEmpty(id)) {
+      AlertUtil.showWarning("게시물 ID를 입력해주세요");
+      return;
+    }
+    
+	const confirmed = await AlertUtil.showConfirm("정말로 삭제하겠습니까?");
+    if (!confirmed) return;
+	
+    ApiUtil.del(`/api/board/${id}`)
+		.then(data => {
+			console.log(data);
+		})
+	    .catch(() => {
+	      console.log("API 호출 실패");
+	    });
+	
+  });
+</script>
+</html> 
