@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <title>회원가입</title>
+</head>
+<body>
+  <h2>회원가입</h2>
+
+  <form id="signupForm">
+    <div>
+      <label for="username">아이디</label><br/>
+      <input type="text" id="username" name="username" />
+    </div>
+
+    <div>
+      <label for="email">이메일</label><br/>
+      <input type="email" id="email" name="email"/>
+    </div>
+
+    <div>
+      <label for="password">비밀번호</label><br/>
+      <input type="password" id="password" name="password"/>
+    </div>
+
+    <div>
+      <label for="passwordConfirm">비밀번호확인</label><br/>
+      <input type="password" id="passwordConfirm" name="passwordConfirm"/>
+    </div>
+
+    <button type="submit">가입하기</button>
+  </form>
+</body>
+<script src="/js/common.js"></script>
+<script>
+  document.getElementById("signupForm")?.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const username        = StringUtil.trim(document.getElementById("username").value);
+    const email           = StringUtil.trim(document.getElementById("email").value);
+    const password        = StringUtil.trim(document.getElementById("password").value);
+    const passwordConfirm = StringUtil.trim(document.getElementById("passwordConfirm").value);
+
+    // 유효성 검사
+    if (!ValidationUtil.isNotEmpty(username)) {
+      AlertUtil.showWarning("아이디를 입력해주세요.");
+      return;
+    }
+    if (!ValidationUtil.isLowerCaseOnly(username)) {
+      AlertUtil.showWarning("아이디는 소문자만 가능합니다");
+      return;
+    }
+    if (!ValidationUtil.isValidEmail(email)) {
+      AlertUtil.showWarning("이메일 형식에 맞지 않습니다.");
+      return;
+    }
+
+    if (!ValidationUtil.isValidPasswordLength(password, 8, 16)) {
+      AlertUtil.showError("비밀번호는 8~16자 사이여야 합니다");
+      return;
+    }
+
+    if (!ValidationUtil.isPasswordMatch(password, passwordConfirm)) {
+      AlertUtil.showError("비밀번호와 비밀번호 확인이 일치하지 않습니다");
+      return;
+    }
+
+    fetch(`/user/signup-fetch?username=${username}&email=${email}&password=${password}`)
+	    .then(res => res.json()) 
+		  .then(data => {
+        if (data.code === "SUCCESS") {
+          AlertUtil.showSuccess("요청이 성공적으로 처리되었습니다."); // ✅ 성공 알림  
+        } else {
+          // DB 연동 후 아이디 중복 검사 결과
+          AlertUtil.showError(data.data["아이디"] + "는 이미 등록된 아이디입니다.");
+        }
+      })
+      .catch(err => {
+        AlertUtil.showError("서버 요청 중 오류가 발생했습니다.");
+      });
+    });
+</script>
+</html>
