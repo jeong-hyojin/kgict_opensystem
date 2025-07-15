@@ -1,0 +1,29 @@
+[ 게시물 생성 ]
+
+method : POST
+url : localhost:8282/board
+body:
+{
+	"title": "제목",
+	"content": "내용",
+	"password": "비밀번호"
+}
+
+
+
+[ 게시물 업데이트 ]
+
+method : PUT
+url : localhost:8282/board
+body:
+{
+	"boardId": "uuid",
+	"content": "내용",
+}
+
+
+
+[ 게시물 생성 ]
+
+method : DELETE
+url : localhost:8282/board?boardId=${boardId}
