@@ -14,8 +14,10 @@
   </form>
 
   <form id="updateForm" style="display: none;">
-  	<p>기존 UUID : 111</p>
-    <p>기존 내용: 기존 내용입니다.</p>
+  	<div>
+	  <span id="oldUUIDText"></span><br />
+	  <span id="oldContentText">.</span><br /><br />
+    </div>
     
     <div>
     	<label for="newUUID">수정할 UUID</label><br/>
@@ -24,7 +26,7 @@
     
     <div>
     	<label for="newContent">수정할 내용</label><br />
-    	<input type="text" id="newContent" required />
+    	<textarea id="newContent" cols="30" rows="5" required></textarea>
     </div>
     
     <button type="submit">수정 제출</button>
@@ -43,23 +45,26 @@
   boardForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const UUID = UUIDInput.value.trim();
+    const UUID = StringUtil.trim(UUIDInput.value);
 
     //유효성 검사
-    // UUID 검사
     if (!ValidationUtil.isNotEmpty(UUID)) {
       AlertUtil.showWarning("게시글 번호를 입력해주세요");
       return;
     }
+
+    //ApiUtil.get 으로 게시글 정보를 불러왔다고 가정
+     const oldContent = "기존 내용입니다.";
+    document.getElementById("oldUUIDText").innerText = `기존 UUID : ${UUID}`;
+	document.getElementById("oldContentText").innerText = `기존 내용: ${oldContent}`;
     
-    //fetch 요청으로 DB에서 값을 가져왔다고 가정
+    //updateForm 보이기기
+    updateForm.style.display = "block";
     
-    //updateForm 보이기
-    updateForm.style.display = "block"; 
   });
 
-  //게시글 수정하는 이벤트
-  updateForm.addEventListener("submit", function (e) {
+  // 게시글 수정 이벤트
+  updateForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     //수정할 내용 UUID, content
@@ -67,41 +72,23 @@
     const newUUID 		= newUUIDInput.value.trim();
     const newContent	= newContentInput.value.trim();
 
-    //유효성 검사
-    // UUID 검사
+    // 유효성 검사
     if (!ValidationUtil.isNotEmpty(newUUID)) {
       AlertUtil.showWarning("게시글 번호를 입력해주세요");
       return;
     }
-      
-    // content 검사
     if (!ValidationUtil.isNotEmpty(newContent)) {
       AlertUtil.showWarning("내용을 입력해주세요");
       return;
     }
 
-    //fetch 서버 요청
-    fetch("/boards/update", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-    	oldUUID: oldUUID,    	  
-    	newUUID: newUUID,
-        content: newContent
-      })
-    })
-      .then(res => res.text())
-      .then(data => {
-        AlertUtil.showSuccess(data);
-        //boardForm.reset();
-        //updateForm.reset();
-        //updateForm.style.display = "none";
-      })
-      .catch(() => {
-        AlertUtil.showError("게시글 수정 중 오류가 발생했습니다.");
-      });
+    // ApiUtil PUT 요청
+    const result = await ApiUtil.put("/boards/update", {
+        oldUUID: oldUUID,
+        newUUID: newUUID,
+        newContent: newContent
+    });
+
   });
 </script>
 </html>

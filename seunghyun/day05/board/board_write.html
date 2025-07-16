@@ -21,7 +21,7 @@
 
     <div>
       <label for="content">내용</label></br>
-      <input type="text" id="content" name="content" required />
+      <textarea id="content" name="content" cols="30" rows="5" required></textarea>
     </div>
 
     <div>
@@ -30,8 +30,8 @@
     </div>
 
     <div>
-      <label for="password">비밀번호 확인</label><br>
-      <input type="password" id="passwordConfirm" name="password" minlength="8" maxlength="12" />
+      <label for="passwordConfirm">비밀번호 확인</label><br>
+      <input type="password" id="passwordConfirm" name="passwordConfirm" minlength="8" maxlength="20" />
       <span id="passwordMsg" style="color: red;"></span>
     </div>
 
@@ -45,7 +45,7 @@
 
   passwordMsg.style.display = "none";
 
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", async function (e) {
     e.preventDefault(); // 새로고침 방지
 
     const UUID 				= document.getElementById("UUID").value.trim();
@@ -54,64 +54,40 @@
     const password			= document.getElementById("password").value.trim();
     const passwordConfirm	= document.getElementById("passwordConfirm").value.trim();
 
-    //유효성 검사
-    // title 검사
-	if (!ValidationUtil.isNotEmpty(UUID)) {
-	  AlertUtil.showWarning("게시글 번호를 입력해주세요");
-	  return;
-	}
-	
-    // title 검사
-	if (!ValidationUtil.isNotEmpty(title)) {
-	  AlertUtil.showWarning("제목을 입력해주세요");
-	  return;
-	}
-    
-	// content 검사
-	if (!ValidationUtil.isNotEmpty(content)) {
-	  AlertUtil.showWarning("내용을 입력해주세요");
-	  return;
-	}
-    
-	// 비밀번호 검사
-	if (!ValidationUtil.isNotEmpty(password)) {
-	  AlertUtil.showWarning("비밀번호를 입력해주세요");
-	  return;
-	}
-	if (!ValidationUtil.isValidPasswordLength(password, 8, 20)) {
-	  AlertUtil.showWarning("비밀번호는 8자 이상 20자 이하로 입력해주세요");
-	  return;
-	}
-	
-	// 비밀번호 일치 검사
-	if (!ValidationUtil.isPasswordMatch(password, passwordConfirm)) {
-	  AlertUtil.showError("비밀번호와 비밀번호 확인이 일치하지 않습니다");
-	  return;
-	}
-	
-	//fetch 서버 요청
-	fetch("/boards/write", {
-	  method: "POST",
-	  headers: {
-	    "Content-Type": "application/json",
-	  },
-	  body: JSON.stringify({
-	    UUID: UUID,
-	    title: title,
-	    content: content,
-	    password: password,
-	  })
-	})
-	  .then(res => res.text())
-	  .then(data => {
-	    AlertUtil.showSuccess(data);
-	    form.reset();
-	  })
-	  .catch(() => {
-	    AlertUtil.showError("서버 오류가 발생했습니다. 다시 시도해주세요.");
-	  });
+    // 유효성 검사
+    if (!ValidationUtil.isNotEmpty(UUID)) {
+      AlertUtil.showWarning("게시글 번호를 입력해주세요");
+      return;
+    }
+    if (!ValidationUtil.isNotEmpty(title)) {
+      AlertUtil.showWarning("제목을 입력해주세요");
+      return;
+    }
+    if (!ValidationUtil.isNotEmpty(content)) {
+      AlertUtil.showWarning("내용을 입력해주세요");
+      return;
+    }
+    if (!ValidationUtil.isNotEmpty(password)) {
+      AlertUtil.showWarning("비밀번호를 입력해주세요");
+      return;
+    }
+    if (!ValidationUtil.isValidPasswordLength(password, 8, 20)) {
+      AlertUtil.showWarning("비밀번호는 8자 이상 20자 이하로 입력해주세요");
+      return;
+    }
+    if (!ValidationUtil.isPasswordMatch(password, passwordConfirm)) {
+      AlertUtil.showError("비밀번호와 비밀번호 확인이 일치하지 않습니다");
+      return;
+    }
+
+    // ApiUtil POST 요청
+    const result = await ApiUtil.post("/boards/write", {
+        UUID: UUID,
+        title: title,
+        content: content,
+        password: password,
+    });
 
   });
-  
 </script>
 </html>
