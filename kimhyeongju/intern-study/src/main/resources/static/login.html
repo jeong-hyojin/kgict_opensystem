@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2> 로그인 </h2>
+
+    <form id="loginForm">
+        <input type="text"        id="userId"   placeholder="아이디"/>
+        <input type="password"    id="password"   placeholder="비밀번호"/>
+        <button type="submit">로그인</button>
+    </form>
+</body>
+<script src="/js/common.js"></script>
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function (e){
+        e.preventDefault();
+        const userId   = StringUtil.trim(document.getElementById("userId").value);
+        const password = StringUtil.trim(document.getElementById("password").value);
+
+        const result = await ApiUtil.post("/user/login",{ userId, password });
+
+        if(result){
+            const { userId, username, email } = result;
+
+            //권한 별 페이지 이동 (관리자/일반)
+            if("admin01" === userId){
+                lcoation.href = '/admin.html';
+            }else{
+                location.href = '/board/board_list.html';
+            }
+        }
+    })
+</script>
+</html>

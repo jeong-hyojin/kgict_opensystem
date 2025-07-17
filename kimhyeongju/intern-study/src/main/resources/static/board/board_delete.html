@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>deleteBoardForm</title>
+    <link rel="stylesheet" href="css/board.css">
+</head>
+<body>
+    <h2>게시글 삭제 페이지</h2>
+    <form id="deleteBoardForm">
+        <div>
+            <label for = "boardId"> 게시물 id </label><br/>
+            <input type="text" id="boardId" name="boardId"/>
+        </div>
+  
+        <button type="submit"> 삭제하기 </button>
+    </form>
+</body>
+<script src="/js/common.js"></script>
+<script>
+    document.getElementById("deleteBoardForm").addEventListener("submit", handleSubmit);
+
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        const data = getData();
+
+     	// 게시글 업데이트 요청
+        ApiUtil.del("/board", {
+            params: {
+                boardId: data.boardId
+            }
+        })
+        .then(response => {
+        	AlertUtil.showSuccess("삭제가 완료되었습니다.");
+            document.getElementById("deleteBoardForm").reset();
+        })
+        .catch(error => {
+			console.log(error);
+			console.log(error.message);
+            // ApiUtil 내부에서 showError을 하기 때문에, 로그 생성
+            //console.error("게시글 수정 실패", error);
+            if (error.message.includes("존재하지 않은 게시글")) {
+		        AlertUtil.showError(error.message);
+		    }   
+        });
+    }
+    
+    // 폼 데이터 반환 메서드
+    function getData() {
+        return {
+        	boardId: document.getElementById("boardId").value.trim(),
+        };
+    }
+
+</script>
+</html>
+

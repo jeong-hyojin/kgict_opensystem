@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>createBoardForm</title>
+    <link rel="stylesheet" href="css/board.css">
+</head>
+<body>
+    <h2>게시글 작성 페이지</h2>
+    <form id="createBoardForm">
+        <div>
+            <label for = "title"> 제목 </label><br/>
+            <input type="text" id="title" name="title"/>
+        </div>
+
+        <div>
+            <label for="content"> 내용 </label><br/>
+            <textarea id="content" name="content" rows="5" cols="50"></textarea>
+        </div>
+        
+        <div>
+            <label for="password">비밀번호</label><br/>
+            <input type="password" id="password" name="password"/>
+        </div>
+        <button type="submit"> 제출하기 </button>
+    </form>
+</body>
+<script src="/js/common.js"></script>
+<script>
+    document.getElementById("createBoardForm").addEventListener("submit", handleSubmit);
+
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        const data = getData();
+
+        // validation 체크
+        const error = isValid(data);
+        if (error) {
+        	AlertUtil.showError(error);
+            return;
+        }
+
+     	// 게시글 생성 요청
+        ApiUtil.post("/board", {
+            title: data.title,
+            content: data.content,
+            password: data.password
+        })
+        .then(response => {
+            // 서버에서 보낸 응답 alert
+            AlertUtil.showSuccess(response.data);
+            document.getElementById("postForm").reset();
+        })
+        .catch(error => {
+            // ApiUtil 내부에서 showError을 하기 때문에, 로그 생성
+            // console.error("게시글 등록 실패", error);
+        });
+    }
+    
+    // 폼 데이터 반환 메서드
+    function getData() {
+        return {
+            title: document.getElementById("title").value.trim(),
+            content: document.getElementById("content").value.trim(),
+            password: document.getElementById("password").value.trim(),
+        };
+    }
+
+    // 폼 데이터 유휴성 검사 메서드
+    function isValid({ title, content, password }) {
+        // 비밀번호 정규표현식 (passwordRegex) : 영문과 숫자로 구성 가능합니다.
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/;
+        
+        if (!title) {
+            return "제목을 입력해주세요.";
+        }
+        if (content.length < 20) {
+            return "내용은 최소 20자 이상이어야 합니다.";
+        }
+        if (
+            password.length < 6 ||
+            password.length > 12 ||
+            !passwordRegex.test(password)
+        ) {
+            return "비밀번호는 6자 이상 12자 이하이며, 영문과 숫자로 구성되어야 합니다.";
+        }
+        return null;
+    }
+</script>
+</html>
