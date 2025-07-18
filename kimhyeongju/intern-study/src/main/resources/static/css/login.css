@@ -1,0 +1,72 @@
+body {
+    font-family: sans-serif;
+    background-color: #f4f4f4;
+    background-image: url('https://static.wixstatic.com/media/223f51_4539293183e343d386f277a523211a69~mv2.png/v1/fill/w_244,h_60,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/KG%20ICT%20Logo.png');
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 2rem; /* Add some space below the heading */
+}
+
+.login-container {
+    text-align: center;
+}
+
+#loginForm {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    display: inline-block; /* To center the form */
+}
+
+#loginForm input[type="text"],
+#loginForm input[type="password"] {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* To include padding and border in the element's total width and height */
+}
+
+#loginForm button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#loginForm button:hover {
+    background-color: #0056b3;
+}
+
+.signup-link {
+    text-align: right;
+    margin-top: 1rem;
+}
+
+.signup-link a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
