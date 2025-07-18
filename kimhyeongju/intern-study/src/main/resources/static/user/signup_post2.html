@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <title>회원가입</title>
+</head>
+
+<body>
+  <h2>회원가입</h2>
+
+  <form id="signupForm">
+    <div>
+      <label for="username">아이디</label><br/>
+      <input type="text" id="username" name="username" required/>
+    </div>
+
+    <div>
+      <label for="email">이메일</label><br/>
+      <input type="email" id="email" name="email"/>
+    </div>
+
+    <div>
+      <label for="password">비밀번호</label><br/>
+      <input type="password" id="password" name="password" minlength="8" maxlength="12"/>
+    </div>
+
+    <div>
+      <label for="password">비밀번호확인</label><br/>
+      <input type="password" id="passwordConfirm" name="password" minlength="8" maxlength="12"/>
+    </div>
+
+    <button type="submit">가입하기</button>
+  </form>
+</body>
+<script src="/js/common.js"></script>
+<script>
+  const form = document.getElementById("signupForm");
+
+  form.addEventListener("submit", async(e) => {
+	  e.preventDefault(); // 새로고침 방지
+
+	  const username = document.getElementById("username").value.trim();
+	  const email = document.getElementById("email").value.trim();
+	  const password = document.getElementById("password").value.trim();
+	  const passwordConfirm = document.getElementById("passwordConfirm").value.trim();
+	   
+    //유효성 검사
+	 // 아이디 검사
+	 if (!ValidationUtil.isNotEmpty(username)) {
+	   AlertUtil.showWarning("아이디를 입력해주세요");
+	   return;
+	 }
+	 if (!ValidationUtil.isLowerCaseOnly(username)) {
+	   AlertUtil.showWarning("아이디는 소문자만 입력 가능합니다");
+	   return;
+	 }
+	
+	 // 이메일은 입력한 경우만 검사
+	 if (ValidationUtil.isNotEmpty(email) && !ValidationUtil.isValidEmail(email)) {
+	   AlertUtil.showWarning("이메일 형식이 올바르지 않습니다");
+	   return;
+	 }
+	
+	 // 비밀번호 검사
+	 if (!ValidationUtil.isNotEmpty(password)) {
+	   AlertUtil.showWarning("비밀번호를 입력해주세요");
+	   return;
+	 }
+	 if (!ValidationUtil.isValidPasswordLength(password, 8, 20)) {
+	   AlertUtil.showWarning("비밀번호는 8자 이상 20자 이하로 입력해주세요");
+	   return;
+	 }
+	
+	 // 비밀번호 일치 검사
+	 if (!ValidationUtil.isPasswordMatch(password, passwordConfirm)) {
+	   AlertUtil.showError("비밀번호와 비밀번호 확인이 일치하지 않습니다");
+	   return;
+	 }
+		
+   	 const result = await ApiUtil.post('/user/signup-post-dto', {
+        username,
+        email,
+        password
+     });
+   	 
+   	 location.href="/login.html";
+  });
+</script>
+</html>
