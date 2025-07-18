@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.intern.study.board.dto.BoardCreateRequest;
+import com.intern.study.board.dto.BoardUpdateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +31,7 @@ public class BoardController{
 	public ResponseEntity<Map<String, Object>> createBoard(
 		@RequestBody BoardCreateRequest request
 	) {
-		log.info("[게시물 생성 요청] title: " + request.title + " content: " + request.content + " password: " + request.password);
+		log.info("[게시물 생성 요청] title: " + request.getTitle() + " content: " + request.getContent() + " password: " + request.getPassword());
 		String uuid = UUID.randomUUID().toString();
 		repository.add(uuid);
 
@@ -51,13 +53,13 @@ public class BoardController{
 	public ResponseEntity<Map<String, Object>> updateBoard(
 		@RequestBody BoardUpdateRequest request
 	) {
-		log.info("[게시물 수정 요청] boardId: " + request.boardId + " content: " + request.content);
+		log.info("[게시물 수정 요청] boardId: " + request.getBoardId() + " content: " + request.getContent());
 
 		// 게시글 수정
 
 		Map<String, Object> body = new HashMap<>();
 
-		String uuid = request.boardId;
+		String uuid = request.getBoardId();
 		if(repository.contains(uuid)) {
 			body.put("success", true);
 		    body.put("message", "게시물이 수정되었습니다.");
@@ -89,18 +91,4 @@ public class BoardController{
 		    return ResponseEntity.ok(body);
 		}
 	}
-
-	@Data
-	public static class BoardCreateRequest {
-	    private String title;
-	    private String content;
-	    private String password;
-	}
-
-	@Data
-	public static class BoardUpdateRequest {
-	    private String boardId;
-	    private String content;
-	}
-
 }
