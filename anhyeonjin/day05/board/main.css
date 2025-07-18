@@ -1,0 +1,99 @@
+/* board.css */
+
+body {
+  font-family         : 'Segoe UI', sans-serif;
+  background-color    : #f9f9f9;
+  padding             : 40px;
+  margin              : 0;
+}
+
+h2 {
+  text-align          : center;
+  color               : #333;
+}
+
+form {
+  max-width           : 600px;
+  margin              : 0 auto;
+  padding             : 30px 40px;
+  background-color    : white;
+  border-radius       : 12px;
+  box-shadow          : 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+form > div {
+  margin-bottom       : 20px;
+}
+
+label {
+  display             : block;
+  margin-bottom       : 8px;
+  font-weight         : 600;
+  color               : #444;
+}
+
+input[type            = "text"],
+input[type            = "password"],
+textarea {
+  width               : 100%;
+  padding             : 10px 12px;
+  border              : 1px solid #ccc;
+  border-radius       : 6px;
+  font-size           : 14px;
+  box-sizing          : border-box;
+  transition          : border-color 0.2s;
+}
+
+input:focus,
+textarea:focus {
+  border-color        : #4A90E2;
+  outline             : none;
+}
+
+textarea {
+  min-height          : 100px;
+  resize              : vertical;
+}
+
+button {
+  padding             : 10px 20px;
+  margin-right        : 10px;
+  font-size           : 14px;
+  border              : none;
+  border-radius       : 6px;
+  cursor              : pointer;
+  transition          : background-color 0.2s;
+}
+
+button:disabled {
+  background-color    : #ccc;
+  color               : white;
+  cursor              : not-allowed;
+}
+
+#submitBtn {
+  background-color    : #4A90E2;
+  color               : white;
+}
+
+#submitBtn:hover:not(:disabled) {
+  background-color    : #357ABD;
+}
+
+#editBtn {
+  background-color    : #FFA500;
+  color               : white;
+}
+
+#editBtn:hover:not(:disabled) {
+  background-color    : #e18e00;
+}
+
+#deleteBtn {
+  background-color    : #E74C3C;
+  color               : white;
+}
+
+#deleteBtn:hover:not(:disabled) {
+  background-color    : #c0392b;
+}
