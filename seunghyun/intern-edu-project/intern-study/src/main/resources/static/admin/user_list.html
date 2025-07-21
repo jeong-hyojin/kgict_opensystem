@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 - 사용자 목록</title>
+</head>
+<body class ="p-4">
+    <h2 class = "mb-4">사용자 목록</h2>
+
+    <div class = "mb-3 text-right">
+        <button class ="btn btn-primary" id ="useradd" onclick="showAddUserModal()"> + 사용자 추가</button>
+    </div>
+
+    <table  id ="userTable"
+            class = "table table-bordered table-hover"
+            data-toggle ="table"
+            data-serarch = "true"
+            data-pagination = "true"
+            data-page-size = "5">
+        <thead>
+            <tr>
+                <th data-field ="role"      data-sortable="true">권한</th>
+                <th data-field ="userId"    data-sortable="true"        data-formatter ="userIdFormatter">아이디</th>
+                <th data-field ="username"  data-sortable="true">이름</th>
+                <th data-field ="email"     data-sortable="true">이메일</th>
+                <th data-field ="isActive"  data-sortable="true">사용여부</th>
+                <th data-field ="actions"   data-events ="actionEvents" data-formatter="actionFormatter">관리</th>
+
+            </tr>
+        </thead>
+    </table>
+
+</body>
+<script src = "/js/common.js"></script>
+<script>
+    //테이블 로딩
+    async function loadUserTable(){
+        const users = await ApiUtil.get("/api/admin/user-list");
+        $('#userTable').bootstrapTable('load', users);
+    }
+
+    function userIdFormatter(value, row){
+        return `<a href="/admin/user_detail.html?userId=${encodeURIComponent(value)}" class ="text-primary">${value}</a>`;
+    }
+
+    //초기로딩
+    document.addEventListener("DOMContentLoaded", function (){
+        //ApiUtil가 로드될 때까지 기다렸다가 실행
+        setTimeout(loadUserTable,100); // 약간의 지연
+    });
+
+</script>
+</html>

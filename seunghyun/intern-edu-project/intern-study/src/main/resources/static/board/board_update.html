@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>게시글 수정</title>
+  <link rel="stylesheet" href="/css/board.css">
+</head>
+
+<body>
+  <h2>게시글 수정하기</h2>
+  <form id="boardForm">
+    <label for="UUID">게시글 번호</label>
+    <input type="text" id="UUID" required />
+    <button type="submit">기존 내용 불러오기</button>
+  </form>
+
+  <form id="updateForm" style="display: none;">
+  	<div>
+	  <span id="oldUUIDText"></span></br>
+	  <span id="oldContentText">.</span>
+    </div>
+    
+    <div>
+    	<label for="newUUID">수정할 UUID</label>
+    	<input type="text" id="newUUID" required />
+    </div>
+    
+    <div>
+    	<label for="newContent">수정할 내용</label>
+    	<textarea id="newContent" cols="30" rows="5" required></textarea>
+    </div>
+    
+    <button type="submit">수정 제출</button>
+  </form>
+</body>
+
+<script src="/js/common.js"></script>
+<script>
+  const boardForm 		  = document.getElementById("boardForm");
+  const updateForm 		  = document.getElementById("updateForm");
+  const UUIDInput 		  = document.getElementById("UUID");
+  const newUUIDInput 	  = document.getElementById("newUUID");
+  const newContentInput   = document.getElementById("newContent");
+
+  //기존 게시글을 불러오는 이벤트
+  boardForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const UUID = StringUtil.trim(UUIDInput.value);
+
+    //유효성 검사
+    if (!ValidationUtil.isNotEmpty(UUID)) {
+      AlertUtil.showWarning("게시글 번호를 입력해주세요");
+      return;
+    }
+
+    //ApiUtil.get 으로 게시글 정보를 불러왔다고 가정
+     const oldContent = "기존 내용입니다.";
+    document.getElementById("oldUUIDText").innerText = `기존 UUID : ${UUID}`;
+	document.getElementById("oldContentText").innerText = `기존 내용: ${oldContent}`;
+    
+    //updateForm 보이기기
+    updateForm.style.display = "block";
+    
+  });
+
+  // 게시글 수정 이벤트
+  updateForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    //수정할 내용 UUID, content
+    const oldUUID 		= UUIDInput.value.trim();
+    const newUUID 		= newUUIDInput.value.trim();
+    const newContent	= newContentInput.value.trim();
+
+    // 유효성 검사
+    if (!ValidationUtil.isNotEmpty(newUUID)) {
+      AlertUtil.showWarning("게시글 번호를 입력해주세요");
+      return;
+    }
+    if (!ValidationUtil.isNotEmpty(newContent)) {
+      AlertUtil.showWarning("내용을 입력해주세요");
+      return;
+    }
+
+    // ApiUtil PUT 요청
+    const result = await ApiUtil.put("/api/boards/update", {
+        oldUUID: oldUUID,
+        newUUID: newUUID,
+        newContent: newContent
+    });
+
+  });
+</script>
+</html>

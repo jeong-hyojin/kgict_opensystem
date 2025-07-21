@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 - 게시글 목록</title>
+</head>
+<body class ="p-4">
+    <h2 class = "mb-4">게시글 목록</h2>
+
+    <div class = "mb-3 text-right">
+        <button class ="btn btn-primary" id ="boardadd" onclick="showAddUserModal()"> + 게시글 추가</button>
+    </div>
+
+    <table  id ="boardTable"
+            class = "table table-bordered table-hover"
+            data-toggle ="table"
+            data-serarch = "true"
+            data-pagination = "true"
+            data-page-size = "5">
+        <thead>
+            <tr>
+                <th data-field ="id" data-sortable="true" data-formatter="idFormatter">게시글 번호</th>
+                <th data-field ="title" data-sortable="true">제목</th>
+            </tr>
+        </thead>
+
+    </table>
+
+</body>
+<script src = "/js/common.js"></script>
+<script>
+    async function loadBoardTable(){
+        const boards = await ApiUtil.get("/api/boards/board-list");
+
+        //console.log(boards);
+
+        $('#boardTable').bootstrapTable('load',boards);
+    }
+
+    function idFormatter(value, row){
+        return `<a href="/board/board_detail.html?id=${encodeURIComponent(value)}" class ="text-primary">${value}</a>`;
+    }
+
+    //초기 로딩
+    document.addEventListener("DOMContentLoaded", function (){
+       //ApiUtil 로드 기다리기
+       setTimeout(loadBoardTable,100);
+    });
+
+</script>
+
+</html>
