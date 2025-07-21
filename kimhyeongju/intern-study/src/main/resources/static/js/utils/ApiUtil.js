@@ -13,7 +13,8 @@
 async function get(url, params = {}) {
     try {
         const response = await axios.get(url, {params});
-        return handleApiResponse(response);
+        const result = await handleApiResponse(response);
+        return result;
     } catch (error) {
 		// 클라이언트 단 오류만 처리
         handleApiError(error);

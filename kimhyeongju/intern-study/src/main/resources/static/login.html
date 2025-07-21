@@ -28,17 +28,25 @@
         const userId   = StringUtil.trim(document.getElementById("userId").value);
         const password = StringUtil.trim(document.getElementById("password").value);
 
-        const result = await ApiUtil.post("/user/login",{ userId, password });
+        const result = await ApiUtil.post("/api/user/login",{ userId, password });
 
         if(result){
-            const { userId, username, email } = result;
+            // const { userId, username, email } = result;
 
-            //권한 별 페이지 이동 (관리자/일반)
-            if("admin01" === userId){
-                lcoation.href = '/admin.html';
-            }else{
-                location.href = '/board/board_list.html';
-            }
+            // //권한 별 페이지 이동 (관리자/일반)
+            // if("admin01" === userId){
+            //     lcoation.href = '/admin.html';
+            // }else{
+            //     location.href = '/board/board_list.html';
+            // }
+
+            const { userId, role } = result;
+
+            // 로그인 성공 시 세션에 사용자 정보 저장
+            localStorage.setItem("userId", userId);
+
+            const url = (role==='ADMIN' ? '/admin/user_list.html' : '/board/board_list.html');
+            location.href = url;
         }
     })
 </script>
