@@ -3,30 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>createBoardForm</title>
-    <link rel="stylesheet" href="css/board.css">
+    <link rel="stylesheet" href="/css/board_create.css">
 </head>
 <body>
-    <h2>게시글 작성 페이지</h2>
+<div class="board-container">
+    <h2 class="board-title"><i class="fas fa-pen-nib"></i> 게시글 작성</h2>
     <form id="createBoardForm">
-        <div>
-            <label for = "title"> 제목 </label><br/>
-            <input type="text" id="title" name="title"/>
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" id="title" name="title" />
         </div>
 
-        <div>
-            <label for="content"> 내용 </label><br/>
-            <textarea id="content" name="content" rows="5" cols="50"></textarea>
+        <div class="form-group">
+            <label for="content">내용</label>
+            <textarea id="content" name="content" rows="5"></textarea>
         </div>
-        
-        <div>
-            <label for="password">비밀번호</label><br/>
-            <input type="password" id="password" name="password"/>
+
+        <div class="password-group">
+            <input type="password" id="password" name="password" placeholder="비밀번호" />
         </div>
-        <button type="submit"> 제출하기 </button>
+
+        <button type="submit" class="submit-btn">제출하기</button>
     </form>
+</div>
 </body>
 <script src="/js/common.js"></script>
 <script>
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+        // 로그인 정보가 없으면 로그인 페이지로 이동
+        window.location.href = "/login.html";
+    }
+
     document.getElementById("createBoardForm").addEventListener("submit", handleSubmit);
 
     function handleSubmit(e) {
@@ -40,9 +48,11 @@
         	AlertUtil.showError(error);
             return;
         }
+        const userId = localStorage.getItem("userId");
 
-     	// 게시글 생성 요청
-        ApiUtil.post("/board", {
+        // 게시글 생성 요청
+        ApiUtil.post("/v1/board", {
+            userId: userId,
             title: data.title,
             content: data.content,
             password: data.password
@@ -50,7 +60,7 @@
         .then(response => {
             // 서버에서 보낸 응답 alert
             AlertUtil.showSuccess(response.data);
-            document.getElementById("postForm").reset();
+            location.href = "/board/board_list.html";
         })
         .catch(error => {
             // ApiUtil 내부에서 showError을 하기 때문에, 로그 생성

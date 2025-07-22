@@ -1,7 +1,7 @@
 package com.intern.study.board.controller;
 
-import com.intern.study.board.dto.BoardCreateRequest;
-import com.intern.study.board.dto.BoardUpdateRequest;
+import com.intern.study.board.dto.request.BoardCreateRequest;
+import com.intern.study.board.dto.request.BoardUpdateRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,5 +1,11 @@
+:root {
+    --main-color: #8661d1;       /* 기본 연보라 */
+    --main-color-dark: #6b4fc2;  /* hover 시 진한 보라 */
+    --main-color-light: #ebe5fb; /* 배경용 연보라 */
+}
+
 body {
-    font-family: sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     background-color: #f4f4f4;
     background-image: url('https://static.wixstatic.com/media/223f51_4539293183e343d386f277a523211a69~mv2.png/v1/fill/w_244,h_60,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/KG%20ICT%20Logo.png');
     background-repeat: no-repeat;
@@ -14,21 +20,32 @@ body {
 
 h2 {
     text-align: center;
-    color: #333;
-    margin-bottom: 2rem; /* Add some space below the heading */
+    color: var(--main-color-dark);
+    margin-bottom: 3rem;
+    font-weight: 700;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
 }
 
 .login-container {
     text-align: center;
+    padding: 2rem 1rem; /* 여유 padding 추가 */
 }
+
 
 #loginForm {
     background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    display: inline-block; /* To center the form */
+    padding: 2.5rem 2rem;              /* 상하 패딩 확대 */
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    width: 380px;                      /* ✅ 폼 너비 증가 */
+    max-width: 90vw;
+    display: inline-block;
+    transition: box-shadow 0.3s ease;
+}
+
+#loginForm:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 #loginForm input[type="text"],
@@ -36,24 +53,36 @@ h2 {
     width: 100%;
     padding: 0.8rem;
     margin-bottom: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box; /* To include padding and border in the element's total width and height */
+    border: 1.5px solid var(--main-color-light);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 0.95rem;
+    transition: border 0.3s ease;
+}
+
+#loginForm input:focus {
+    outline: none;
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 3px rgba(134, 97, 209, 0.2);
 }
 
 #loginForm button {
     width: 100%;
     padding: 0.8rem;
-    background-color: #007bff;
+    background-color: var(--main-color);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 999px;
     cursor: pointer;
     font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 #loginForm button:hover {
-    background-color: #0056b3;
+    background-color: var(--main-color-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .signup-link {
@@ -62,11 +91,21 @@ h2 {
 }
 
 .signup-link a {
-    color: #007bff;
+    color: var(--main-color);
     text-decoration: none;
     font-size: 0.9rem;
+    font-weight: 500;
 }
 
 .signup-link a:hover {
     text-decoration: underline;
+    color: var(--main-color-dark);
+}
+
+.login-banner {
+    width: 120px;
+    height: auto;
+    display: block;
+    margin: 0 auto 1.5rem auto;
+    object-fit: contain;
 }

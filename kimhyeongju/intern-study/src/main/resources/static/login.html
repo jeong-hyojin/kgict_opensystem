@@ -9,7 +9,7 @@
 <body>
     <div class="login-container">
         <form id="loginForm">
-            <h2>로그인</h2>
+            <img src="/img/logo.png" alt="Login Banner" class="login-banner">
             <input type="text" id="userId" placeholder="아이디"/>
             <input type="password" id="password" placeholder="비밀번호"/>
             <button type="submit">로그인</button>
@@ -31,19 +31,11 @@
         const result = await ApiUtil.post("/api/user/login",{ userId, password });
 
         if(result){
-            // const { userId, username, email } = result;
-
-            // //권한 별 페이지 이동 (관리자/일반)
-            // if("admin01" === userId){
-            //     lcoation.href = '/admin.html';
-            // }else{
-            //     location.href = '/board/board_list.html';
-            // }
-
-            const { userId, role } = result;
+            const { userId, username, role } = result;
 
             // 로그인 성공 시 세션에 사용자 정보 저장
             localStorage.setItem("userId", userId);
+            localStorage.setItem("username", username);
 
             const url = (role==='ADMIN' ? '/admin/user_list.html' : '/board/board_list.html');
             location.href = url;

@@ -53,7 +53,8 @@ async function post(url, data = {}) {
 async function put(url, data = {}) {
     try {
         const response = await axios.put(url, data);
-        return handleApiResponse(response);
+        const result  = await handleApiResponse(response);
+        return result;
     } catch (error) {
 		// 클라이언트 단 오류만 처리
         handleApiError(error);
@@ -72,7 +73,8 @@ async function put(url, data = {}) {
 async function del(url, params = {}) {
     try {
         const response = await axios.delete(url, params);
-        return handleApiResponse(response);
+        const result  = await handleApiResponse(response);
+        return result;
     } catch (error) {
 		// 클라이언트 단 오류만 처리
         handleApiError(error);
@@ -88,7 +90,7 @@ async function del(url, params = {}) {
 async function handleApiResponse(response) {
     const {code, message, data} = response.data;
     
-	if(code != "SUCCESS"){
+	if(code != "SUCCESS") {
 		await AlertUtil.showError(message);
 		return null;
 	}

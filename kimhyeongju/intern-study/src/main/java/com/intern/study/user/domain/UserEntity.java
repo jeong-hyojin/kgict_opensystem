@@ -1,9 +1,6 @@
 package com.intern.study.user.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,6 +8,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @ToString
+@Table(name = "p_user")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity {

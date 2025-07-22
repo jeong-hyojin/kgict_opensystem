@@ -2,7 +2,6 @@ package com.intern.study.common;
 
 import com.intern.study.user.domain.UserEntity;
 import com.intern.study.user.repository.UserRepository;
-import com.intern.study.user.service.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
