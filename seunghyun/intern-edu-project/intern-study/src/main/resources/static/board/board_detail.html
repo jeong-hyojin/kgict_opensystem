@@ -11,6 +11,7 @@
 <div class="mt-3">
   <button class="btn btn-secondary" onclick="goBack()">돌아가기</button>
   <button class = "btn btn-primary" onclick="goUpdate()">수정하기</button>
+  <button class = "btn btn-danger" onclick="goDelete()">삭제하기</button>
   <button class="btn btn-outline-danger float-right" onclick="logout()">로그아웃</button>
 </div>
 
@@ -23,10 +24,23 @@
     history.back();
   }
 
-  //수정하기
+  //게시글 수정하기
   function goUpdate(){
-    const boardUUID = new URLSearchParams(location.search).get("id");
-    location.href = `board_update.html?id=${boardUUID}`;
+    const id = new URLSearchParams(location.search).get("id");
+    location.href = `board_update.html?id=${id}`;
+  }
+
+  //게시글 삭제하기
+  async function goDelete(){
+    const id = new URLSearchParams(location.search).get("id");
+
+    // ApiUtil.del 요청 (PathVariable 방식)
+    const result = await ApiUtil.del(`/api/boards/delete/${id}`);
+
+    // ApiUtil.del 요청 (RequestParam 방식)
+    //const result = await ApiUtil.del("/api/boards/delete", { params: { id: id } });
+
+    location.href = "board_list.html";
   }
 
   // 로그아웃 처리 (세션 제거는 서버에서, 여기선 로컬 스토리지만)
@@ -37,12 +51,9 @@
 
   // 사용자 정보 조회
   async function loadBoardInfo() {
-    const boardUUID = new URLSearchParams(location.search).get("id");
-
-    console.log(boardUUID);
-
-    const board = await ApiUtil.get(`/api/boards/${boardUUID}`);
-    console.log(board)
+    const boardId = new URLSearchParams(location.search).get("id");
+    const board = await ApiUtil.get(`/api/boards/${boardId}`);
+    //console.log(board)
     if (!board) return; // ApiUtil 내부에서 showError 처리됨
 
     const html = `

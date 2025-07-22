@@ -1,21 +1,15 @@
 package com.intern.study.board.controller;
 
-import java.awt.dnd.DropTargetAdapter;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 import com.intern.study.board.domain.BoardEntity;
 import com.intern.study.board.domain.BoardRequestDto;
 import com.intern.study.board.domain.BoardResponseDto;
-import com.intern.study.board.repository.BoardRepository;
 import com.intern.study.board.service.BoardService;
 import com.intern.study.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,11 +25,11 @@ public class BoardController {
 
 		try {
 			BoardResponseDto responseDto = boardService.writeBoard(boardRequestDto);
-			return new ApiResponse<>("SUCCESS","회원가입 성공", responseDto.getId());
+			return new ApiResponse<>("SUCCESS","게시글 작성 성공", responseDto.getId());
 
 		} catch (Exception e) {
 			log.error("회원가입 오류", e);
-			return new ApiResponse<>("FAIL", "회원가입 중 에러가 발생했습니다.", null);
+			return new ApiResponse<>("FAIL", "게시글 작성 중 에러가 발생했습니다.", null);
 		}
 	}
 
@@ -92,11 +86,11 @@ public class BoardController {
 
 
 	//게시글 삭제
-	@DeleteMapping("/delete")
-	public ApiResponse<?> deleteBoard( @RequestParam String UUID) {
+	@DeleteMapping("/delete/{id}")
+	public ApiResponse<?> deleteBoard( @PathVariable String id) {
 
 		try{
-			boardService.deleteBoard(Long.parseLong(UUID));
+			boardService.deleteBoard(Long.parseLong(id));
 			return new ApiResponse<>("SUCCESS","게시글 삭제 성공", null);
 
 		}catch (Exception e) {

@@ -1,6 +1,5 @@
 package com.intern.study.board.service;
 
-
 import com.intern.study.board.domain.BoardEntity;
 import com.intern.study.board.domain.BoardRequestDto;
 import com.intern.study.board.domain.BoardResponseDto;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Setter
@@ -38,10 +36,10 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardEntity getBoard(Long UUID) {
+    public BoardEntity getBoard(Long id) {
 
-        BoardEntity board = boardRepository.findByUUID(UUID)
-                                            .orElseThrow( () -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."));
+        BoardEntity board = boardRepository.findById(id)
+                .orElseThrow( () -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."));
 
         return board;
     }
@@ -52,9 +50,9 @@ public class BoardService {
         ArrayList<BoardResponseDto> boardList = new ArrayList<>();
 
         boardRepository.findAll()
-                       .forEach(board -> {
-                                boardList.add(new BoardResponseDto(board));
-        });
+                .forEach(board -> {
+                    boardList.add(new BoardResponseDto(board));
+                });
 
         return boardList;
     }
@@ -62,14 +60,12 @@ public class BoardService {
     @Transactional
     public BoardResponseDto updateBoard( BoardRequestDto requestDto) {
 
-        //findById가 아닌 UUID로 찾기
-        BoardEntity board = getBoard(requestDto.getUUID());
+        //getBoard 호출해 Id에 해당하는 Board 가져오기
+        BoardEntity board = getBoard(requestDto.getId());
 
         //board update
-        board.setUUID(requestDto.getUUID());
         board.setTitle(requestDto.getTitle());
         board.setContent(requestDto.getContent());
-        board.setPassword(requestDto.getPassword());
         board.setUpdatedDate(LocalDateTime.now());
 
         //JPA 저장
@@ -80,9 +76,12 @@ public class BoardService {
 
 
     @Transactional
-    public void deleteBoard(Long UUID) {
+    public void deleteBoard(Long id) {
 
-        BoardEntity board = getBoard(UUID);
+        //getBoard 호출해 Id에 해당하는 Board 가져오기
+        BoardEntity board = getBoard(id);
+
+        //JPA 삭제
         boardRepository.delete(board);
     }
 

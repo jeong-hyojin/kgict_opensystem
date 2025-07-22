@@ -1,66 +1,64 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <title>게시글 수정</title>
-  <link rel="stylesheet" href="/css/board.css">
+    <meta charset="utf-8">
+    <title>게시글 수정</title>
+    <link rel="stylesheet" href="/css/board.css">
 </head>
 
 <body>
-  <h2>게시글 수정하기</h2>
-  <form id="updateForm">
+<h2>게시글 수정하기</h2>
+<form id="updateForm">
     <div>
-    	<label for="title">수정할 제목</label>
-    	<input type="text" id="title" required />
+        <label for="title">수정할 제목</label>
+        <input type="text" id="title" required />
     </div>
-    
+
     <div>
-    	<label for="content">수정할 내용</label>
-    	<input type="text" id="content" required />
+        <label for="content">수정할 내용</label>
+        <input type="text" id="content" required />
     </div>
-    
+
     <button type="submit">수정 제출</button>
-  </form>
+</form>
 </body>
 
 <script src="/js/common.js"></script>
 <script>
 
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id"); // URL에서 id 추출
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id"); // URL에서 id 추출
+    const updateForm = document.getElementById("updateForm");
 
-  const updateForm = document.getElementById("updateForm");
-  const title 	   = document.getElementById("title");
-  const content    = document.getElementById("content");
+    // 게시글 수정 이벤트
+    updateForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-  // 게시글 수정 이벤트
-  updateForm.addEventListener("submit", async function (e) {
-    e.preventDefault();
+        //수정할 title, content 불러오기
+        const title 	= document.getElementById("title").value.trim();
+        const content	= document.getElementById("content").value.trim();
 
-    //수정할 title, content 불러오기
-    const title 	= title.value.trim();
-    const content	= content.value.trim();
+        // 유효성 검사
+        if (!ValidationUtil.isNotEmpty(title)) {
+            AlertUtil.showWarning("게시글 제목을 입력해주세요");
+            return;
+        }
+        if (!ValidationUtil.isNotEmpty(content)) {
+            AlertUtil.showWarning("내용을 입력해주세요");
+            return;
+        }
 
-    // 유효성 검사
-    if (!ValidationUtil.isNotEmpty(title)) {
-      AlertUtil.showWarning("게시글 제목을 입력해주세요");
-      return;
-    }
-    if (!ValidationUtil.isNotEmpty(content)) {
-      AlertUtil.showWarning("내용을 입력해주세요");
-      return;
-    }
+        // ApiUtil PUT 요청
+        const result = await ApiUtil.put("/api/boards/update", {
+            id : id,
+            title: title,
+            content: content
+        });
 
-    // ApiUtil PUT 요청
-    const result = await ApiUtil.put("/api/boards/update", {
-        id : id,
-        title: title,
-        content: content
+        location.href = "board_list.html";
+
     });
-
-    location.href = "board_list.html";
-
-  });
 
 </script>
 </html>
