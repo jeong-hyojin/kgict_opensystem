@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>사용자 목록</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Table CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <h2 class="mb-4">사용자 목록</h2>
+    <div class="mb-3 text-end">
+        <button class="btn btn-primary">+ 사용자 추가</button>
+    </div>
+    <div class="table-responsive">
+        <table id="userTable"
+               class="table table-bordered table-hover align-middle"
+               data-toggle="table"
+               data-search="true"
+               data-pagination="true"
+               data-page-size="5">
+            <thead class="table-light">
+            <tr>
+                <th data-field="role" data-sortable="true">권한</th>
+                <th data-field="userId" data-sortable="true" data-formatter="userIdFormatter">아이디</th>
+                <th data-field="username" data-sortable="true">이름</th>
+                <th data-field="email" data-sortable="true">이메일</th>
+                <th data-field="isActive" data-sortable="true">사용여부</th>
+                <th data-field="actions" data-formatter="actionFormatter">관리</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<script src="/js/common.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.1/dist/themes/bootstrap-table-bs5/bootstrap-table-bs5.min.js"></script>
+
+<script>
+    async function loadUserTable() {
+        const users = await ApiUtil.get("/api/admin/user-list");
+        $("#userTable").bootstrapTable('load', users);
+    }
+    function userIdFormatter(value, row) {
+        return `<a href="/admin/user_detail.html?userId=${encodeURIComponent(value)}" class="text-primary">${value}</a>`;
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(loadUserTable, 100);
+    });
+</script>
+</body>
+</html>
