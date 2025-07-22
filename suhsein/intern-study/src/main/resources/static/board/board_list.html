@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <title>게시판 - 게시물 목록</title>
+  <style>
+    .pointer-row:hover {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="container py-4">
+<h2 class="mb-4">게시물 목록</h2>
+
+<div class="mb-3 text-right">
+  <button class="btn btn-primary" id="write" onclick="location.href=`board_create.html`">글쓰기</button>
+</div>
+
+<table id="boardTable"
+       class="table table-bordered table-hover"
+       data-toggle="table"
+       data-search="true"
+       data-pagination="true"
+       data-page-size="5">
+  <thead>
+  <tr data-events="boardDetailEvent">
+    <th data-width="100" data-formatter="orderFormatter">#</th>
+    <th data-width="800" data-field="title"    data-sortable="true">제목</th>
+    <th data-width="100" data-field="id">게시물 번호</th>
+<!--    <th data-field="actions"  data-events="actionEvents" data-formatter="actionFormatter">관리</th>-->
+  </tr>
+  </thead>
+</table>
+</body>
+<script src="/js/common.js"></script>
+<script>
+
+  async function loadBoard() {
+    const board = await ApiUtil.get("/api/board");
+
+    // 테이블 로딩
+    $('#boardTable').bootstrapTable('load', board);
+
+    // 마우스 호버 시 커서 포인터 적용
+    $('#boardTable').on('mouseover', 'tbody > tr', function(){
+      $(this).addClass('pointer-row');
+    });
+
+    // 행 클릭 이벤트 적용
+    $('#boardTable').on('click-row.bs.table', function(e, row){
+      location.href= `/board/board_detail.html?postId=${row.id}`;
+    })
+  }
+
+  // 순서 인덱스
+  function orderFormatter(value, row, idx){
+      return idx + 1;
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    // common.js 호출 이후 실행되도록
+    setTimeout(loadBoard, 100);
+  });
+</script>
