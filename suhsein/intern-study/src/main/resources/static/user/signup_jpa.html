@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+    body {
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .signup-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      max-width: 500px;
+      width: 100%;
+    }
+    .signup-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    .signup-body {
+      padding: 2rem;
+    }
+    .form-control {
+      border-radius: 10px;
+      border: 2px solid #e9ecef;
+      padding: 12px 15px;
+      transition: all 0.3s ease;
+      background-color: #fafafa;
+    }
+    .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+      background-color: white;
+    }
+    .btn-signup {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 10px;
+      padding: 12px 30px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-signup:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+    .input-group-text {
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-right: none;
+      border-radius: 10px 0 0 10px;
+    }
+    .input-group .form-control {
+      border-left: none;
+      border-radius: 0 10px 10px 0;
+    }
+    .password-strength {
+      height: 4px;
+      border-radius: 2px;
+      margin-top: 5px;
+      transition: all 0.3s ease;
+    }
+    .form-group label {
+      color: #495057;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="signup-card">
+          <div class="signup-header">
+            <h2 class="mb-0">
+              <i class="fas fa-user-plus mr-2"></i>회원가입
+            </h2>
+            <p class="mb-0 mt-2">새로운 계정을 만들어보세요</p>
+          </div>
+          
+          <div class="signup-body">
+            <form id="signupForm">
+              <div class="form-group">
+                <label for="userId" class="font-weight-bold">
+                  <i class="fas fa-user mr-2"></i>아이디
+                </label>
+                <input type="text" 
+                       class="form-control" 
+                       id="userId" 
+                       name="userId" 
+                       placeholder="아이디를 입력하세요"
+                       required />
+              </div>
+
+              <div class="form-group">
+                <label for="username" class="font-weight-bold">
+                  <i class="fas fa-id-card mr-2"></i>이름
+                </label>
+                <input type="text" 
+                       class="form-control" 
+                       id="username" 
+                       name="username" 
+                       placeholder="이름을 입력하세요"
+                       required />
+              </div>
+
+              <div class="form-group">
+                <label for="email" class="font-weight-bold">
+                  <i class="fas fa-envelope mr-2"></i>이메일
+                </label>
+                <input type="email" 
+                       class="form-control" 
+                       id="email" 
+                       name="email" 
+                       placeholder="이메일을 입력하세요" />
+              </div>
+
+              <div class="form-group">
+                <label for="password" class="font-weight-bold">
+                  <i class="fas fa-lock mr-2"></i>비밀번호
+                </label>
+                <input type="password" 
+                       class="form-control" 
+                       id="password" 
+                       name="password" 
+                       placeholder="비밀번호를 입력하세요" />
+                <div class="password-strength" id="passwordStrength"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="passwordConfirm" class="font-weight-bold">
+                  <i class="fas fa-lock mr-2"></i>비밀번호 확인
+                </label>
+                <input type="password" 
+                       class="form-control" 
+                       id="passwordConfirm" 
+                       name="password" 
+                       placeholder="비밀번호를 다시 입력하세요" />
+              </div>
+
+              <button type="submit" class="btn btn-signup btn-block text-white">
+                <i class="fas fa-user-plus mr-2"></i>가입하기
+              </button>
+            </form>
+            
+            <div class="text-center mt-3">
+              <a href="/login.html" class="text-muted">
+                <i class="fas fa-sign-in-alt mr-1"></i>이미 계정이 있으신가요?
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script>
+    const form = document.getElementById("signupForm");
+    const passwordInput = document.getElementById("password");
+    const passwordStrength = document.getElementById("passwordStrength");
+
+    // 비밀번호 강도 표시
+    passwordInput.addEventListener("input", function() {
+      const password = this.value;
+      let strength = 0;
+      
+      if (password.length >= 8) strength++;
+      if (/[a-z]/.test(password)) strength++;
+      if (/[A-Z]/.test(password)) strength++;
+      if (/[0-9]/.test(password)) strength++;
+      if (/[^A-Za-z0-9]/.test(password)) strength++;
+      
+      const colors = ['#dc3545', '#ffc107', '#17a2b8', '#28a745', '#28a745'];
+      const widths = ['20%', '40%', '60%', '80%', '100%'];
+      
+      passwordStrength.style.backgroundColor = colors[strength - 1] || '#e9ecef';
+      passwordStrength.style.width = widths[strength - 1] || '0%';
+    });
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault(); // 새로고침 방지
+
+      const userId = document.getElementById("userId").value.trim();
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const passwordConfirm = document.getElementById("passwordConfirm").value.trim();
+      
+      //유효성 검사
+      // 아이디 검사
+      if (!ValidationUtil.isNotEmpty(userId)) {
+        AlertUtil.showWarning("아이디를 입력해주세요");
+        return;
+      }
+      
+      // 이름 검사
+      if (!ValidationUtil.isNotEmpty(username)) {
+        AlertUtil.showWarning("이름을 입력해주세요");
+        return;
+      }
+    
+      // 이메일은 입력한 경우만 검사
+      if (ValidationUtil.isNotEmpty(email) && !ValidationUtil.isValidEmail(email)) {
+        AlertUtil.showWarning("이메일 형식이 올바르지 않습니다");
+        return;
+      }
+    
+      // 비밀번호 검사
+      if (!ValidationUtil.isNotEmpty(password)) {
+        AlertUtil.showWarning("비밀번호를 입력해주세요");
+        return;
+      }
+      if (!ValidationUtil.isValidPasswordLength(password, 8, 20)) {
+        AlertUtil.showWarning("비밀번호는 8자 이상 20자 이하로 입력해주세요");
+        return;
+      }
+    
+      // 비밀번호 일치 검사
+      if (!ValidationUtil.isPasswordMatch(password, passwordConfirm)) {
+        AlertUtil.showError("비밀번호와 비밀번호 확인이 일치하지 않습니다");
+        return;
+      }
+    
+      // POST 요청
+      const result = await ApiUtil.post('/api/user/signup-post-jpa', {
+        userId,
+        username,
+        email,
+        password
+      });
+    
+      if(result) {
+        location.href = "/login.html";
+      }
+    });
+  </script>
+</body>
+</html>
