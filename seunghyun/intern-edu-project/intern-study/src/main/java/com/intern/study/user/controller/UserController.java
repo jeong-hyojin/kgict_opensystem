@@ -2,19 +2,17 @@ package com.intern.study.user.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import com.intern.study.common.ApiResponse;
 import com.intern.study.user.domain.UserEntity;
 import com.intern.study.user.domain.UserLoginRequestDto;
 import com.intern.study.user.domain.UserLoginResponseDto;
 import com.intern.study.user.domain.UserSignupRequestDto;
-import com.intern.study.user.repository.UserRepository;
 
+import com.intern.study.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -23,9 +21,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-	
-	private final UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
+
+	private final UserService userService;
 
     @GetMapping("/signup-url")
     public String signupUrl(@RequestParam String username,
@@ -112,79 +109,52 @@ public class UserController {
     		return new ApiResponse<>(code, message, response); // 실패지만 메시지는 포함됨
     	}
     }
-    
+
+/* 리팩토링 후, Controller-Service-Repository 분리 */
     @PostMapping("/signup-post-jpa")
     public ApiResponse<?> signupRequest(@RequestBody UserSignupRequestDto resquestDto){
-    	
-    	try {
-    		
-    		//비번 암호화
-    		resquestDto.encodePassword(passwordEncoder);
-    		
-    		//Dto -> Entity
-    		UserEntity entity = resquestDto.toEntity();
-    		
-    		//Entity Jpa 저장 -> 저장 후 entity 반환
-    		UserEntity savedEntity = userRepository.save(entity);
-    		
-    		return new ApiResponse<>("SUCCESS", "회원가입 성공했습니다.", savedEntity.getId());
-			
-		} catch (Exception e) {
-			log.error("회원가입 중 예외 발생",e);
-			return new ApiResponse<>("Fail", "회원가입 중 오류가 발생했습니다.",null);
-		}
 
+		try {
+			Long id = userService.signupRequest(resquestDto);
+			return new ApiResponse<>("SUCCESS","회원가입 성공", id);
+
+		} catch (Exception e) {
+			log.error("회원가입 오류", e);
+			return new ApiResponse<>("FAIL", "회원가입 중 에러가 발생했습니다.", null);
+		}
     }    
     
     
     @PostMapping("/login")
     public ApiResponse<?> login(@RequestBody UserLoginRequestDto requestDto){
-    	
-    	String userId = requestDto.getUserId();
-    	String password = requestDto.getPassword();
-    	
-    	//1. userId로 사용자 정보 조회
-    	Optional<UserEntity> userOpt = userRepository.findByUserId(userId);
-    	
-    	if(userOpt.isEmpty()) {
-    		return new ApiResponse<>("FAIL", "존재하지 않는 아이디입니다.", null);
-    	}
-    	
-    	UserEntity user = userOpt.get();
-    	
-    	if(!passwordEncoder.matches(password, user.getPassword())){
-    		return new ApiResponse<>("FAIL", "비밀번호가 일치하지 않습니다.", null);
-    	}
-    	//응답용 사용자 정보 변환후 반환
-    	UserLoginResponseDto dto = new UserLoginResponseDto(user);
-    	
-    	return new ApiResponse<>("SUCCESS", "로그인 성공", dto);
+
+		try {
+			UserLoginResponseDto response = userService.login(requestDto);
+			return new ApiResponse<>("SUCCESS", "로그인 성공", response);
+
+		} catch (IllegalArgumentException e) {
+			return new ApiResponse<>("FAIL", e.getMessage(), null );
+
+		} catch (Exception e) {
+			log.error("로그인 실패", e);
+			return new ApiResponse<>("FAIL", "로그인 처리 중 오류가 발생했습니다.", null );
+		}
     }
 
 
 	@GetMapping("/{userId}")
 	public ApiResponse<?> userDetail(@PathVariable String userId){
-
-		log.info(userId);
 		try{
-			Optional<UserEntity> userOpt = userRepository.findByUserId(userId);
+			UserEntity user = userService.getUserDetail(userId);
+			return new ApiResponse<>("SUCCESS", "조회 성공", user);
 
-			if(userOpt.isEmpty()) {
-				return new ApiResponse<>("Fail","해당 사용자를 찾을 수 없습니다.", null);
-			}
-			UserEntity user = userOpt.get();
+		}catch (IllegalArgumentException e) {
+			return new ApiResponse<>("Fail", e.getMessage(), null);
 
-			return new ApiResponse<>("SUCCESS", "조회 성공",user);
-
-		}catch (Exception e) {
+		} catch (Exception e) {
 			log.error("사용자 조회 중 예러 발생",e);
-
 			return new ApiResponse<>("FAIL","조회 처리 중 오류가 발생했습니다.",null);
 		}
-
 	}
-
-
-
 
 }

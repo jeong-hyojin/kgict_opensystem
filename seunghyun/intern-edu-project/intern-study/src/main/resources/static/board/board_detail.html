@@ -10,6 +10,7 @@
 
 <div class="mt-3">
   <button class="btn btn-secondary" onclick="goBack()">돌아가기</button>
+  <button class = "btn btn-primary" onclick="goUpdate()">수정하기</button>
   <button class="btn btn-outline-danger float-right" onclick="logout()">로그아웃</button>
 </div>
 
@@ -22,6 +23,12 @@
     history.back();
   }
 
+  //수정하기
+  function goUpdate(){
+    const boardUUID = new URLSearchParams(location.search).get("id");
+    location.href = `board_update.html?id=${boardUUID}`;
+  }
+
   // 로그아웃 처리 (세션 제거는 서버에서, 여기선 로컬 스토리지만)
   function logout() {
     localStorage.clear();
@@ -30,16 +37,21 @@
 
   // 사용자 정보 조회
   async function loadBoardInfo() {
-    const boardId = new URLSearchParams(location.search).get("id");
-    const board = await ApiUtil.get(`/api/boards/${boardId}`);
+    const boardUUID = new URLSearchParams(location.search).get("id");
 
+    console.log(boardUUID);
+
+    const board = await ApiUtil.get(`/api/boards/${boardUUID}`);
+    console.log(board)
     if (!board) return; // ApiUtil 내부에서 showError 처리됨
 
     const html = `
       <div><strong>게시글 번호</strong> : ${board.id}</div>
+      <div><strong>게시글 UUID</strong> : ${board.uuid}</div>
       <div><strong>제목</strong> : ${board.title}</div>
       <div><strong>내용</strong> : ${board.content}</div>
       <div><strong>작성 시간</strong> : ${board.createdDate}</div>
+      <div><strong>수정 시간</strong> : ${board.updatedDate}</div>
     `;
 
     document.getElementById("boardInfo").innerHTML = html;

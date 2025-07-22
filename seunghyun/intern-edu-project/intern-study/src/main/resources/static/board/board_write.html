@@ -11,7 +11,7 @@
   <h2>게시글 작성하기</h2>
   <form id="boardForm">
     <div>
-      <label for="UUID">게시글 번호</label>
+      <label for="UUID">UUID</label>
       <input type="text" id="UUID" name="UUID" required />
     </div>
 
@@ -57,7 +57,7 @@
 
     // 유효성 검사
     if (!ValidationUtil.isNotEmpty(UUID)) {
-      AlertUtil.showWarning("게시글 번호를 입력해주세요");
+      AlertUtil.showWarning("UUID를 입력해주세요");
       return;
     }
     if (!ValidationUtil.isNotEmpty(title)) {

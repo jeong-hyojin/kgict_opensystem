@@ -19,8 +19,10 @@
             data-page-size = "5">
         <thead>
             <tr>
-                <th data-field ="id" data-sortable="true" data-formatter="idFormatter">게시글 번호</th>
+                <th data-field ="id" data-sortable="true">게시글 번호</th>
+                <th data-field ="uuid" data-sortable="true" data-formatter="idFormatter">게시글 UUID</th>
                 <th data-field ="title" data-sortable="true">제목</th>
+                <th data-field="updatedDate" data-sortable="true">수정일</th>
             </tr>
         </thead>
 
@@ -31,8 +33,7 @@
 <script>
     async function loadBoardTable(){
         const boards = await ApiUtil.get("/api/boards/board-list");
-
-        //console.log(boards);
+        console.log(boards);
 
         $('#boardTable').bootstrapTable('load',boards);
     }

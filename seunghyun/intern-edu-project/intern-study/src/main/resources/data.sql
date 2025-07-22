@@ -10,9 +10,9 @@ INSERT INTO user_entity (
 
 -- BOARD TABLE
 INSERT INTO board_entity(
-    UUID, title, content, password, created_date
+    UUID, title, content, password, created_date, updated_date
 ) VALUES
-      (111, '아침 메뉴 추천', '샌드위치는 맛있다.', '1234',CURRENT_TIMESTAMP),
-      (222, '점심 메뉴 추천', '돈까스는 맛있다.', '1234',CURRENT_TIMESTAMP),
-      (333, '저녁 메뉴 추천', '삼겹살은 맛있다.', '1234',CURRENT_TIMESTAMP);
+      (111, '아침 메뉴 추천', '샌드위치는 맛있다. 샌드위치는 맛있다. 샌드위치는 맛있다.', '1234',CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+      (222, '점심 메뉴 추천', '돈까스는 맛있다. 돈까스는 맛있다. 돈까스는 맛있다.', '1234',CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+      (333, '저녁 메뉴 추천', '삼겹살은 맛있다. 삼겹살은 맛있다. 삼겹살은 맛있다.', '1234',CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -15,10 +16,13 @@ public class BoardEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;                    //게시글 번호
-    private Long UUID;                  //UUID
-    private String title;               //제목
-    private String content;             //내용
-    private String password;            //비밀번호
-    private LocalDateTime createdDate;  //작성일
+    private Long id;                     //게시글 번호
+    private Long UUID;                   //UUID
+    private String title;                //제목
+    private String content;              //내용
+    private String password;             //비밀번호
+    private LocalDateTime createdDate;   //작성일
+    private LocalDateTime updatedDate;   //수정일
+
+
 }

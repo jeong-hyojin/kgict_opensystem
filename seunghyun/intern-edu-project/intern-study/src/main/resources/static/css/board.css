@@ -43,13 +43,17 @@ body {
     transition: border 0.2s;
     margin-bottom: 4px;
   }
+
   input[type="text"]:focus,
   input[type="password"]:focus {
     width: 90%;
     border: 1.5px solid #4f8cff;
     outline: none;
     background: #fff;
+  }
 
+  #content{
+    height: 200px;
   }
   
   button[type="submit"] {
