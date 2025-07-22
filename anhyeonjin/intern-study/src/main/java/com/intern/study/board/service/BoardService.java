@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -20,7 +21,8 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final PasswordEncoder passwordEncoder;
 
-    //추후 JPA 연동
+    // 게시글 작성 (추후 JPA 연동)
+    @Transactional
     public Map<String, Object> writePost(Map<String, String> body) {
         String title = body.get("title");
         String content = body.get("content");
@@ -35,10 +37,12 @@ public class BoardService {
         return result;
     }
 
-    //추후 JPA 연동
+    // 게시글 수정 (추후 JPA 연동)
+    @Transactional
     public Map<String, Object> updatePost(Map<String, String> body) {
         String uuid = body.get("uuid");
         String content = body.get("content");
+
         Map<String, Object> result = new HashMap<>();
         result.put("success", true);
         result.put("message", "게시글이 수정되었습니다");
@@ -46,6 +50,8 @@ public class BoardService {
         return result;
     }
 
+    // 게시글 삭제
+    @Transactional
     public Map<String, Object> deletePost(String uuid) {
         Map<String, Object> result = new HashMap<>();
         Optional<BoardEntity> postOpt = boardRepository.findByUuid(uuid);
@@ -64,6 +70,7 @@ public class BoardService {
         return result;
     }
 
+    // 특정 사용자의 게시글 조회
     public ApiResponse<?> getUserPosts(String userId) {
         try {
             List<BoardEntity> posts = boardRepository.findByUserId(userId);
@@ -85,6 +92,7 @@ public class BoardService {
         }
     }
 
+    // 게시글 상세 조회
     public ApiResponse<?> getPostDetail(String uuid) {
         Optional<BoardEntity> postOpt = boardRepository.findByUuid(uuid);
 
@@ -105,12 +113,9 @@ public class BoardService {
         return new ApiResponse<>("SUCCESS", "게시글 조회 성공", dto);
     }
 
+    // 전체 게시글 조회
     public ApiResponse<?> getAllPosts() {
         List<BoardEntity> posts = boardRepository.findAll();
-
-        log.info("--------------------------전체 게시글 수: {}", posts.size());
-        posts.forEach(post -> log.info("Post UUID: {}, Title: {}, UserID: {}",
-                post.getUuid(), post.getTitle(), post.getUserId()));
 
         List<BoardListResponseDto> data = posts.stream()
                 .map(post -> BoardListResponseDto.builder()

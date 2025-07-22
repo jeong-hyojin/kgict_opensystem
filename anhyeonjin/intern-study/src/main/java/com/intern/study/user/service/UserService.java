@@ -24,6 +24,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // 회원가입 (DB에 사용자 등록)
     @Transactional
     public ApiResponse<?> signupRequest(UserSignupRequestDto requestDto) {
         try {
@@ -37,6 +38,8 @@ public class UserService {
         }
     }
 
+    // 테스트용 회원가입 처리
+    @Transactional
     public Map<String, Object> signupPost(Map<String, String> params) {
         String username = params.get("username");
         String email = params.get("email");
@@ -59,6 +62,7 @@ public class UserService {
         return response;
     }
 
+    // 테스트용 회원가입 조건 확인
     public ApiResponse<?> signupTestWithCondition(UserSignupRequestDto requestDto) {
         Map<String, Object> response = new HashMap<>();
         String username = requestDto.getUsername();
@@ -71,6 +75,7 @@ public class UserService {
         }
     }
 
+    // 로그인 처리
     public ApiResponse<?> login(UserLoginRequestDto requestDto) {
         String userId = requestDto.getUserId();
         String password = requestDto.getPassword();
@@ -90,6 +95,7 @@ public class UserService {
         return new ApiResponse<>("SUCCESS", "로그인 성공", new UserLoginResponseDto(user));
     }
 
+    // 사용자 상세 조회
     public ApiResponse<?> userDetail(String userId) {
         try {
             Optional<UserEntity> userOpt = userRepository.findByUserId(userId);
@@ -104,5 +110,4 @@ public class UserService {
             return new ApiResponse<>("FAIL", "조회 처리 중 오류가 발생했습니다.", null);
         }
     }
-
 }
