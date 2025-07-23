@@ -10,7 +10,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Slf4j
@@ -66,7 +65,6 @@ public class BoardService {
         //board update
         board.setTitle(requestDto.getTitle());
         board.setContent(requestDto.getContent());
-        board.setUpdatedDate(LocalDateTime.now());
 
         //JPA 저장
         boardRepository.save(board);
