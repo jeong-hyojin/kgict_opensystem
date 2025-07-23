@@ -21,7 +21,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // 게시글 작성 (추후 JPA 연동)
+    // 게시글 작성 (향후 JPA 연동 시 저장 로직 포함)
     @Transactional
     public Map<String, Object> writePost(Map<String, String> body) {
         String title = body.get("title");
@@ -37,7 +37,7 @@ public class BoardService {
         return result;
     }
 
-    // 게시글 수정 (추후 JPA 연동)
+    // 게시글 수정 (향후 JPA 연동 시 수정 로직 포함)
     @Transactional
     public Map<String, Object> updatePost(Map<String, String> body) {
         String uuid = body.get("uuid");
