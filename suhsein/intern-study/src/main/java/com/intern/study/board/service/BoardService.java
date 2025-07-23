@@ -35,7 +35,7 @@ public class BoardService {
 	}
 
 	// 게시물 상세 조회
-	public Board getBoardPost(Long postId) {
+	public Board getBoardPost(String postId) {
 		Board retrieved = boardRepository.findById(postId)
 				.orElseThrow(() -> new IllegalArgumentException("게시물 번호 " + postId + " 게시물이 존재하지 않습니다."));
 
@@ -43,13 +43,13 @@ public class BoardService {
 	}
 
 	// 게시물 생성
-	public Long createBoard(BoardRequestDto request) {
+	public String createBoard(BoardRequestDto request) {
 		Board saved = boardRepository.save(Board.from(request, passwordEncoder));
 		return saved.getId();
 	}
 	
 	// 게시물 갱신
-	public BoardUpdateResponseDto updateBoard(Long id, BoardRequestDto request) {
+	public BoardUpdateResponseDto updateBoard(String id, BoardRequestDto request) {
 		Board retrieved = boardRepository.findById(id)
 										 .orElseThrow(() -> new IllegalAccessError("존재하지 않는 게시물입니다."));
 		
@@ -73,7 +73,7 @@ public class BoardService {
 	}
 
 	// 게시물 삭제
-	public boolean deleteBoard(Long id) {
+	public boolean deleteBoard(String id) {
 		// 게시물 존재 여부 확인
 		if(!boardRepository.existsById(id)) {
 			return false;

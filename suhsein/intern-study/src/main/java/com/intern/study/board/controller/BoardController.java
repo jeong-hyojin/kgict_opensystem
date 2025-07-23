@@ -39,7 +39,7 @@ public class BoardController {
 
     // 게시물 상세 조회
     @GetMapping("/{postId}")
-    public ApiResponse<?> getBoardPost(@PathVariable Long postId) {
+    public ApiResponse<?> getBoardPost(@PathVariable String postId) {
         Board boardPost = boardService.getBoardPost(postId);
         return new ApiResponse<>("SUCCESS", postId + "번 게시물 불러오기 성공", BoardResponseDto.from(boardPost));
     }
@@ -47,13 +47,13 @@ public class BoardController {
     // 게시물 생성
     @PostMapping("/create")
     public ApiResponse<?> createBoard(@RequestBody BoardRequestDto request) {
-        Long id = boardService.createBoard(request);
+        String id = boardService.createBoard(request);
         return new ApiResponse<>("SUCCESS", "게시물이 작성되었습니다 ID = " + id, Map.of("id", id));
     }
 
     // 게시물 갱신
     @PutMapping("/{id}")
-    public ApiResponse<?> updateBoard(  @PathVariable Long id
+    public ApiResponse<?> updateBoard(  @PathVariable String id
                                       , @RequestBody BoardRequestDto request ) {
 
         BoardUpdateResponseDto data = boardService.updateBoard(id, request);
@@ -73,9 +73,9 @@ public class BoardController {
 
     // 게시물 삭제
     @DeleteMapping("/{id}")
-    public ApiResponse<?> deleteBoard(@PathVariable Long id) {
+    public ApiResponse<?> deleteBoard(@PathVariable String id) {
         boolean isDeleted = boardService.deleteBoard(id);
-        Map<String, Long> data = Map.of("id", id);
+        Map<String, String> data = Map.of("id", id);
 
         if(!isDeleted) {
             return new ApiResponse<>("FAIL", "존재하지 않는 게시물입니다.", data);
