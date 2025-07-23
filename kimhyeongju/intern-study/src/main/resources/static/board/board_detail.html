@@ -17,13 +17,20 @@
             <span id="createDate">작성일: ...</span>
         </div>
         <div class="post-content content-box" id="boardContent">내용 로딩 중...</div>
-        <div class="d-flex justify-content-end mt-4 gap-2">
-            <button id="updateBtn" class="btn btn-update">
-                <i class="fas fa-edit"></i> 수정하기
-            </button>
-            <button onclick="location.href='/board/board_list.html'" class="btn btn-list">
-                <i class="fas fa-list-ul"></i> 목록으로
-            </button>
+        <div class="d-flex justify-content-between mt-4">
+            <div class="d-flex gap-2">
+                <button id="updateBtn" class="btn btn-update d-none">
+                    <i class="fas fa-edit"></i> 수정하기
+                </button>
+                <button id="deleteBtn" class="btn btn-delete d-none">
+                    <i class="fas fa-trash-alt"></i> 삭제하기
+                </button>
+            </div>
+            <div>
+                <button onclick="location.href='/board/board_list.html'" class="btn btn-list">
+                    <i class="fas fa-list-ul"></i> 목록으로
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -60,6 +67,11 @@
             })}`;
             document.getElementById("boardContent").textContent = board.content;
 
+            if (String(board.userId) === String(localUserId)) {
+                document.getElementById("updateBtn").classList.remove("d-none");
+                document.getElementById("deleteBtn").classList.remove("d-none");
+            }
+
         } catch (e) {
             console.error("API 호출 중 예외 발생:", e);
             showErrorAndRedirect("게시글을 불러오는 중 오류가 발생했습니다.");
@@ -80,9 +92,27 @@
         window.location.href = `/board/board_update.html?id=${boardId}`;
     }
 
+    async function handleDeleteClick() {
+        const confirm = await AlertUtil.showConfirm("정말 삭제하시겠습니까?");
+        if (!confirm) return;
+
+        try {
+            const result = await ApiUtil.del(`/v1/board/${boardId}`);
+            if (result) {
+                window.location.href = "/board/board_list.html";
+            } else {
+                AlertUtil.showError("삭제에 실패했습니다.");
+            }
+        } catch (e) {
+            console.error("삭제 중 예외 발생:", e);
+            AlertUtil.showError("삭제 중 오류가 발생했습니다.");
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
         setTimeout(loadBoardDetail, 100);
         document.getElementById("updateBtn").addEventListener("click", handleUpdateClick);
+        document.getElementById("deleteBtn").addEventListener("click", handleDeleteClick);
     });
 </script>
 </html>

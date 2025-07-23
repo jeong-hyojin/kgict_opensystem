@@ -65,4 +65,8 @@ public class BoardEntity extends BaseEntity {
     public void updatePassword(String password){
         this.password = password;
     }
+
+    public void deleteBoard(){
+        this.isDeleted = Boolean.TRUE;
+    }
 }

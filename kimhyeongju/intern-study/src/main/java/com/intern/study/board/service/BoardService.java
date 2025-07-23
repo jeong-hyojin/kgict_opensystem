@@ -48,7 +48,7 @@ public class BoardService {
 
     public Result<BoardEntity> findBoard(
             Long boardId
-    ){
+    ) {
         Optional<BoardEntity> boardOpt = boardRepository.findById(boardId);
         if (!isValid(boardOpt)) {
             return Result.fail("유효하지 않은 boardId: " + boardId);
@@ -60,7 +60,7 @@ public class BoardService {
             Optional<String> query,
             int page,
             int size
-    ){
+    ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         String word = query.filter(q -> !q.isBlank()).orElse(null);
 
@@ -90,7 +90,7 @@ public class BoardService {
         }
 
         BoardEntity board = boardOpt.get();
-        if(!isUserAuthorized(userId,board.getUser().getUserId())){
+        if (!isUserAuthorized(userId, board.getUser().getUserId())) {
             return Result.fail("수정에 대한 권한이 없습니다. userId: " + userId);
         }
 
@@ -100,11 +100,24 @@ public class BoardService {
         return Result.success(boardRepository.save(board));
     }
 
+    public Result<BoardEntity> deleteBoard(
+            Long boardId
+    ) {
+        Optional<BoardEntity> boardOpt = boardRepository.findById(boardId);
+        if (!isValid(boardOpt)) {
+            return Result.fail("유효하지 않은 boardId: " + boardId);
+        }
+
+        BoardEntity board = boardOpt.get();
+        board.deleteBoard();
+        return Result.success(boardRepository.save(board));
+    }
+
     private boolean isValid(Optional<BoardEntity> boardOpt) {
         return boardOpt.isPresent() && !boardOpt.get().getIsDeleted();
     }
 
-    private boolean isUserAuthorized(String localUserId, String boardUserId){
+    private boolean isUserAuthorized(String localUserId, String boardUserId) {
         return localUserId.equals(boardUserId);
     }
 

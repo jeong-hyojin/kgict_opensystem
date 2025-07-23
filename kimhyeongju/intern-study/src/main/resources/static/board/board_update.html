@@ -74,7 +74,7 @@
             password: data.password
         })
         .then(response => {
-            location.href = "/board/board_list.html";
+            location.href = `/board/board_detail.html?id=${boardId}`;
         })
         .catch(err => {
             // ApiUtil 내부 에러 처리

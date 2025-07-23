@@ -93,3 +93,12 @@ body {
     background-color: #ced4da !important;
     transform: translateY(-1px);
 }
+
+.btn-delete {
+    background-color: #f44336 !important; /* 빨간색 */
+    color: white !important;
+}
+.btn-delete:hover {
+    background-color: #d32f2f !important; /* 더 진한 빨간색 */
+    transform: translateY(-1px);
+}

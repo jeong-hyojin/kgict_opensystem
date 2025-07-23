@@ -44,7 +44,7 @@ public class BoardControllerV1 {
         }
 
         CreateBoardResponseV1 response = mapper.toCreateBoardResponse(result.getData());
-        return ApiResponse.success(response,ALERT_ENABLED);
+        return ApiResponse.success(response, ALERT_ENABLED);
     }
 
     @GetMapping("/{boardId}")
@@ -59,7 +59,7 @@ public class BoardControllerV1 {
         }
 
         BoardResponseV1 response = mapper.toBoardResponse(result.getData());
-        return ApiResponse.success(response,ALERT_DISABLED);
+        return ApiResponse.success(response, ALERT_DISABLED);
 
     }
 
@@ -70,7 +70,7 @@ public class BoardControllerV1 {
             @ModelAttribute SearchBoardRequestV1 request
     ) {
         log.info("[게시글 search 요청] page: " + page + " size: " + size + " query: " + request.toString());
-        return ApiResponse.success(boardService.searchBoards(request.getQuery(), page, size),ALERT_DISABLED);
+        return ApiResponse.success(boardService.searchBoards(request.getQuery(), page, size), ALERT_DISABLED);
     }
 
     @PutMapping("/{boardId}")
@@ -78,7 +78,7 @@ public class BoardControllerV1 {
             @PathVariable Long boardId,
             @RequestBody UpdateBoardRequestV1 request
     ) {
-        log.info("[게시글 updatd 요청] : " + request.toString());
+        log.info("[게시글 update 요청] boardId : " + boardId + " body : " + request.toString());
         Result<BoardEntity> result = boardService.updateBoard(
                 boardId,
                 request.getUserId(),
@@ -86,6 +86,24 @@ public class BoardControllerV1 {
                 request.getContent(),
                 request.getPassword()
         );
+
+        if (!result.isSuccess()) {
+            return ApiResponse.fail(result.getMessage());
+        }
+
+        BoardResponseV1 response = mapper.toBoardResponse(result.getData());
+        return ApiResponse.success(response, ALERT_ENABLED);
+    }
+
+    @DeleteMapping("/{boardId}")
+    public ApiResponse deleteBoard(
+            @PathVariable Long boardId
+    ) {
+        log.info("[게시글 삭제 요청] boardId : " + boardId);
+        Result<BoardEntity> result = boardService.deleteBoard(boardId);
+        if (!result.isSuccess()) {
+            return ApiResponse.fail(result.getMessage());
+        }
         BoardResponseV1 response = mapper.toBoardResponse(result.getData());
         return ApiResponse.success(response, ALERT_ENABLED);
     }
