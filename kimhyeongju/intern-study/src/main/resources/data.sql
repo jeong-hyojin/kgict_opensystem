@@ -7,6 +7,7 @@ INSERT INTO p_user (
       ('test3', '$2a$10$Mc6JofMLsf7tIP3Age4tpuUSyiscjwgvG7tjh2xsTA0Lf7OSbvptG', 'testUser3', 'test3@example.com', '010-1111-2222', 'USER', true, CURRENT_TIMESTAMP),
       ('admin01', '$2a$10$Mc6JofMLsf7tIP3Age4tpuUSyiscjwgvG7tjh2xsTA0Lf7OSbvptG', '관리자', 'admin@example.com', '010-9999-0000', 'ADMIN', true, CURRENT_TIMESTAMP);
 
+
 INSERT INTO p_board (user_id, title, content, password, is_deleted, created_at, updated_at
 ) VALUES
     (3, '공지사항 안내드립니다.', '시스템 점검 예정입니다.', '1234', false, DATEADD('DAY', 0, CURRENT_TIMESTAMP), DATEADD('DAY', 0, CURRENT_TIMESTAMP)),

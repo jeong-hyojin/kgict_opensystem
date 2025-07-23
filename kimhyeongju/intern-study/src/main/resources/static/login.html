@@ -20,6 +20,15 @@
             </div>
         </form>
     </div>
+    <div id="globalModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3 class="modal-title"></h3>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button id="modalConfirmBtn">확인</button>
+            </div>
+        </div>
+    </div>
 </body>
 <script src="/js/common.js"></script>
 <script>
@@ -32,19 +41,50 @@
 
         if(result){
             const { userId, username, role } = result;
+            if(role === "TEMP"){
+                showPasswordChangeModal(userId);
+                return;
+            }else{
+                // 로그인 성공 시 세션에 사용자 정보 저장
+                localStorage.setItem("userId", userId);
+                localStorage.setItem("username", username);
 
-            // if(role === "TEMP"){
-            //     showPasswordChangeModal(userId);
-            //     return;
-            // }
-
-            // 로그인 성공 시 세션에 사용자 정보 저장
-            localStorage.setItem("userId", userId);
-            localStorage.setItem("username", username);
-
-            const url = (role==='ADMIN' ? '/admin/user_list.html' : '/board/board_list.html');
-            location.href = url;
+                const url = (role==='ADMIN' ? '/admin/user_list.html' : '/board/board_list.html');
+                location.href = url;
+            }
         }
     })
+
+    function showPasswordChangeModal(userId) {
+        const formHtml = `
+        <div>
+            <input type="password" id="newPassword" placeholder="새 비밀번호" style="width: 100%; margin-bottom: 10px;" />
+            <input type="password" id="confirmPassword" placeholder="비밀번호 확인" style="width: 100%;" />
+        </div>
+    `;
+
+        Modal.showFormModal({
+            title: '비밀번호 변경',
+            formContent: formHtml,
+            onConfirm: async () => {
+                const newPassword = document.getElementById("newPassword").value;
+                const confirmPassword = document.getElementById("confirmPassword").value;
+
+                if (newPassword !== confirmPassword) {
+                    alert("비밀번호가 일치하지 않습니다.");
+                    return;
+                }
+
+                const response = await ApiUtil.post("/api/user/change-password", {
+                    userId,
+                    newPassword
+                });
+
+                if(response){
+                    location.href = "/login.html";
+                }
+            }
+        });
+    }
 </script>
 </html>

@@ -1,6 +1,7 @@
 package com.intern.study.user.controller;
 
 import com.intern.study.common.ApiResponse;
+import com.intern.study.user.dto.ChangePasswordRequestDto;
 import com.intern.study.user.dto.UserLoginRequestDto;
 import com.intern.study.user.dto.UserSignupRequestDto;
 import com.intern.study.user.service.UserService;
@@ -74,5 +75,13 @@ public class UserController {
             @PathVariable String userId
     ) {
         return userService.getUserInfo(userId);
+    }
+
+    @PostMapping("/change-password")
+    public ApiResponse<?> changePassword(
+        @RequestBody ChangePasswordRequestDto request
+    ){
+        log.info("임시 사용자 비밀번호 변경 요청 : " + request.toString());
+        return userService.changePassword(request);
     }
 }

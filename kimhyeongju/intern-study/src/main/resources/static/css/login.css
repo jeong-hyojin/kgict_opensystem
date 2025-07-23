@@ -7,7 +7,6 @@
 body {
     font-family: 'Segoe UI', sans-serif;
     background-color: #f4f4f4;
-    background-image: url('https://static.wixstatic.com/media/223f51_4539293183e343d386f277a523211a69~mv2.png/v1/fill/w_244,h_60,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/KG%20ICT%20Logo.png');
     background-repeat: no-repeat;
     background-position: center top;
     background-attachment: fixed;
@@ -108,4 +107,27 @@ h2 {
     display: block;
     margin: 0 auto 1.5rem auto;
     object-fit: contain;
+}
+
+.modal {
+    position: fixed;
+    z-index: 999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+.modal-content input {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
 }

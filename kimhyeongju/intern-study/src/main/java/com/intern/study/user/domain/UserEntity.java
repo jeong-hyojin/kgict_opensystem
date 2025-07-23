@@ -46,4 +46,12 @@ public class UserEntity {
 		this.isActive = isActive;
 		this.regDate  = regDate;
 	}
+
+	public void changePassword(String password) {
+		this.password = password;
+	}
+
+	public void changeRole(){
+		this.role = "USER";
+	}
 }

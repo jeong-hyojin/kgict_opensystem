@@ -2,6 +2,7 @@ package com.intern.study.user.service;
 
 import com.intern.study.common.ApiResponse;
 import com.intern.study.user.domain.UserEntity;
+import com.intern.study.user.dto.ChangePasswordRequestDto;
 import com.intern.study.user.dto.UserLoginResponseDto;
 import com.intern.study.user.dto.UserSignupRequestDto;
 import com.intern.study.user.repository.UserRepository;
@@ -149,6 +150,35 @@ public class UserService {
             UserLoginResponseDto response = new UserLoginResponseDto(entity.getUserId(), entity.getUsername(), entity.getRole());
             log.info(response.toString());
             return new ApiResponse<>("SUCCESS", ALERT_DISABLED, "조회 성공", response);
+        } catch (Exception e) {
+            log.error("사용자 조회 중 예외 발생", e);
+            return new ApiResponse<>("FAIL", ALERT_ENABLED, "조회 처리 중 오류가 발생했습니다.", null);
+        }
+    }
+
+    @Transactional
+    public ApiResponse changePassword(
+            ChangePasswordRequestDto request
+    ) {
+        try {
+            request.encodePassword(passwordEncoder);
+            String userId = request.getUserId();
+            String newPassword = request.getNewPassword();
+
+            Optional<UserEntity> userOpt = userRepository.findByUserId(userId);
+
+            if (userOpt.isEmpty()) {
+                return new ApiResponse<>("FAIL", ALERT_ENABLED, "해당 사용자를 찾을 수 없습니다.", null);
+            }
+
+            UserEntity entity = userOpt.get();
+            entity.changePassword(newPassword);
+            if (entity.getRole().equals("TEMP")) {
+                entity.changeRole();
+            }
+
+            UserEntity saveEntity = userRepository.save(entity);
+            return new ApiResponse<>("SUCCESS", ALERT_ENABLED, "비밀번호가 변경되었습니다.", saveEntity.getId());
         } catch (Exception e) {
             log.error("사용자 조회 중 예외 발생", e);
             return new ApiResponse<>("FAIL", ALERT_ENABLED, "조회 처리 중 오류가 발생했습니다.", null);

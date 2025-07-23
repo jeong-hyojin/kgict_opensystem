@@ -30,5 +30,18 @@ public class DataLoader {
                         .regDate(LocalDateTime.now())
                         .build()
         );
+
+        userRepository.save(
+                UserEntity.builder()
+                        .userId("temp01")
+                        .password(passwordEncoder.encode("temp01!"))
+                        .username("tempUser1")
+                        .email("temp@example.com")
+                        .phone("010-3664-3521")
+                        .role("TEMP")
+                        .isActive(true)
+                        .regDate(LocalDateTime.now())
+                        .build()
+        );
     }
 }
