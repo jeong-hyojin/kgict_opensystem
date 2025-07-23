@@ -27,10 +27,16 @@
         const result = await ApiUtil.post("/api/user/login", { userId, password });
 
         if (result) {
-            const { userId, role } = result;
+            const { userId, username, role } = result;
+
+            // if(role === "TEMP"){
+            //     showPasswordChangeModal(userId);
+            //     return;
+            // }
 
             //로그인 성공시 세션에 사용자 정보 저장
             localStorage.setItem("userId", userId);
+            localStorage.setItem("username",username);
 
             console.log(role);
 

@@ -84,6 +84,8 @@ async function del(url, params = {}) {
 async function handleApiResponse(response) {
     const { code, message, data } = response.data;
 
+    //console.log("handleApiResponse", response.data)
+
     if (code !== "SUCCESS") {
         await AlertUtil.showError(message);  // 여기도 await 추천
         return null;

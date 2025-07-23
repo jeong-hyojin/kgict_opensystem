@@ -8,7 +8,7 @@
     <h2 class = "mb-4">사용자 목록</h2>
 
     <div class = "mb-3 text-right">
-        <button class ="btn btn-primary" id ="useradd" onclick="showAddUserModal()"> + 사용자 추가</button>
+        <button class ="btn btn-primary" id ="useradd"> + 사용자 추가</button>
     </div>
 
     <table  id ="userTable"
@@ -29,10 +29,58 @@
             </tr>
         </thead>
     </table>
-
+    <div id="globalModal" style="display:none;">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <span class="modal-title"></span>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button id="modalConfirmBtn" class="btn btn-primary">확인</button>
+                <button type="button"        class="btn btn-secondary" onclick="Modal.hideModal()">취소</button>
+            </div>
+        </div>
+    </div>
 </body>
 <script src = "/js/common.js"></script>
 <script>
+
+    // 사용자 추가용 모달 내용
+    const formHtml = `
+        <form id="addUserForm">
+          <div class="form-group mb-3">
+            <label for="userId" class="form-label">아이디</label>
+            <input
+              type        = "text"
+              class       = "form-control"
+              id          = "userId"
+              name        = "userId"
+              placeholder = "아이디를 입력하세요"
+              required />
+          </div>
+          <div class="form-group mb-3">
+            <label for="username" class="form-label">이름</label>
+            <input
+              type        = "text"
+              class       = "form-control"
+              id          = "username"
+              name        = "username"
+              placeholder = "이름을 입력하세요"
+              required />
+          </div>
+          <div class="form-group mb-3">
+            <label for="email" class="form-label">이메일</label>
+            <input
+              type        = "email"
+              class       = "form-control"
+              id          = "email"
+              name        = "email"
+              placeholder = "이메일을 입력하세요"
+              required />
+          </div>
+        </form>
+     `;
+
     //테이블 로딩
     async function loadUserTable(){
         const users = await ApiUtil.get("/api/admin/user-list");
@@ -43,7 +91,55 @@
         return `<a href="/admin/user_detail.html?userId=${encodeURIComponent(value)}" class ="text-primary">${value}</a>`;
     }
 
-    //초기로딩
+    //삭제 버튼 렌더링
+    function actionFormatter(value, row){
+        return `<button class ="btn btn-danger btn-sm delete-btn">삭제</button>`
+    }
+
+    //삭제 버튼 클릭 시
+    window.actionEvents = {
+        'click .delete-btn' : async function(e, value, row){
+            const confirmed = await AlertUtil.showConfirm("정말 삭제하시겠습니까?");
+            if(!confirmed) return;
+
+            //성공 or 실패 시 handleApiResponse() 내 자체 모달 띄움
+            const result = await ApiUtil.del(`/api/admin/user-delete/${row.userId}`);
+
+            //성공 시에만 테이블 새로고침
+            if(result){
+                await loadUserTable(); // 비동기 처리 적용
+            }
+
+        }
+    }
+
+    //사용자 추가 버튼 클릭 시,
+    document.getElementById('useradd').onclick = function (){
+        Modal.showFormModal({
+            title : '사용자 추가',
+            formContent : formHtml,
+            onConfirm : async function(){
+                const form = document.getElementById('addUserForm');
+                const data = {
+                    userId : form.userId.value,
+                    username : form.username.value,
+                    email : form.email.value
+                };
+
+                const result = await ApiUtil.post('/api/admin/user-add', data);
+
+                if(result){
+                    Modal.hideModal();
+                    location.reload();
+                }
+            }
+
+        });
+
+    }
+
+
+    //초기 로딩
     document.addEventListener("DOMContentLoaded", function (){
         //ApiUtil가 로드될 때까지 기다렸다가 실행
         setTimeout(loadUserTable,100); // 약간의 지연
