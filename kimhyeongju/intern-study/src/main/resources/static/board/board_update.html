@@ -3,74 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <title>updateBoardForm</title>
-    <link rel="stylesheet" href="css/board.css">
+    <link rel="stylesheet" href="/css/board_create_update.css">
 </head>
 <body>
-    <h2>게시글 수정 페이지</h2>
-    <form id="updateBoardForm">
-        <div>
-            <label for = "boardId"> 게시물 id </label><br/>
-            <input type="text" id="boardId" name="boardId"/>
-        </div>
+    <div class="board-container">
+        <h2 class="board-title"><i class="fas fa-edit"></i> 게시글 수정</h2>
+        <form id="updateBoardForm">
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" id="title" name="title" />
+            </div>
+            <div class="form-group">
+                <label for="content">내용</label>
+                <textarea id="content" name="content" rows="5"></textarea>
+            </div>
 
-        <div>
-            <label for="content"> 내용 </label><br/>
-            <textarea id="content" name="content" rows="5" cols="50"></textarea>
-        </div>
-  
-        <button type="submit"> 수정하기 </button>
-    </form>
+            <div class="password-group">
+                <input type="password" id="password" name="password" placeholder="비밀번호" />
+            </div>
+
+            <button type="submit" class="submit-btn">저장하기</button>
+        </form>
+    </div>
 </body>
 <script src="/js/common.js"></script>
 <script>
-    document.getElementById("updateBoardForm").addEventListener("submit", handleSubmit);
+    const userId = localStorage.getItem("userId");
+    const boardId = new URLSearchParams(window.location.search).get('id');
 
+    if (!userId || !boardId) {
+        window.location.href = "/login.html";
+    }
+
+    // 게시글 불러오기 메서드 정의
+    async function loadBoardDetail() {
+        try {
+            const board = await ApiUtil.get("/v1/board/" + boardId);
+            if (!board) {
+                await AlertUtil.showError("게시글 정보를 불러오지 못했습니다.");
+                return;
+            }
+            document.getElementById("title").value = board.title;
+            document.getElementById("content").value = board.content;
+        }catch (e) {
+            await AlertUtil.showError("게시글 정보를 불러오지 못했습니다.");
+        }
+    }
+
+    // 초기 로드 시 게시글 불러오기
+    document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(loadBoardDetail, 100);
+        document.getElementById("updateBoardForm").addEventListener("submit", handleSubmit);
+    });
+
+    // 폼 제출 핸들러
     function handleSubmit(e) {
         e.preventDefault();
 
         const data = getData();
-
-        // validation 체크
         const error = isValid(data);
         if (error) {
-        	AlertUtil.showError(error);
+            AlertUtil.showError(error);
             return;
         }
 
-     	// 게시글 업데이트 요청
-        ApiUtil.put("/board", {
-        	boardId: data.boardId,
+        ApiUtil.put("/v1/board/" + boardId, {
+            userId: userId,
+            title: data.title,
             content: data.content,
+            password: data.password
         })
         .then(response => {
-        	if (response.success === true) {
-                AlertUtil.showSuccess(response.message);
-                document.getElementById("updateBoardForm").reset();
-            } else {
-				AlertUtil.showError("존재하지 않은 게시글입니다.");
-            }
+            location.href = "/board/board_list.html";
         })
-        .catch(error => {
-            // ApiUtil 내부에서 showError을 하기 때문에, 로그 생성
-            //console.error("게시글 수정 실패", error);
+        .catch(err => {
+            // ApiUtil 내부 에러 처리
         });
     }
-    
-    // 폼 데이터 반환 메서드
+
+    // 폼 데이터 추출
     function getData() {
         return {
-        	boardId: document.getElementById("boardId").value.trim(),
+            title: document.getElementById("title").value.trim(),
             content: document.getElementById("content").value.trim(),
+            password: document.getElementById("password").value.trim(),
         };
     }
 
-    // 폼 데이터 유휴성 검사 메서드
-    function isValid({ content }) {
-        if (content.length < 20) {
-            return "내용은 최소 20자 이상이어야 합니다.";
+    // 유효성 검사
+    function isValid({ title, content, password }) {
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/;
+
+        if (!title) return "제목을 입력해주세요.";
+        if (content.length < 20) return "내용은 최소 20자 이상이어야 합니다.";
+        if (
+            password.length < 6 ||
+            password.length > 12 ||
+            !passwordRegex.test(password)
+        ) {
+            return "비밀번호는 6자 이상 12자 이하이며, 영문과 숫자로 구성되어야 합니다.";
         }
         return null;
     }
 </script>
 </html>
-

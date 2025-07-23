@@ -61,29 +61,35 @@ body {
     border: 1px solid #e9ecef;
 }
 
-.btn-purple {
-    background-color: var(--main-color) !important;
+/* 버튼 공통 스타일 축소 */
+.btn-update,
+.btn-list {
     border: none;
-    color: #ffffff !important;
-    padding: 10px 20px;
-    font-size: 1.05rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    letter-spacing: 0.5px;
+    padding: 8px 16px;
     border-radius: 999px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
-.btn-purple:hover {
+.btn-update {
+    background-color: var(--main-color) !important;
+    color: #fff !important;
+}
+.btn-update:hover {
     background-color: var(--main-color-dark) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    color: #ffffff !important;
+    transform: translateY(-1px);
 }
 
-.btn-purple i {
-    margin-right: 6px;
+.btn-list {
+    background-color: #dee2e6 !important;
+    color: #343a40 !important;
+}
+.btn-list:hover {
+    background-color: #ced4da !important;
+    transform: translateY(-1px);
 }

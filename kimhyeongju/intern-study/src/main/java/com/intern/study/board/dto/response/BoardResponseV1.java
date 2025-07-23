@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class BoardResponseV1 {
     private final Long boardId;
-    private final  Long userId;
+    private final  String userId;
     private final  String username;
     private final  String title;
     private final  String content;
@@ -15,7 +15,7 @@ public class BoardResponseV1 {
 
     public BoardResponseV1(
             Long boardId,
-            Long userId,
+            String userId,
             String username,
             String title,
             String content,

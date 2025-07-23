@@ -205,5 +205,15 @@
     color: white;
 }
 
+.refreshable-title {
+    cursor: pointer;
+    background: linear-gradient(90deg, var(--main-color), var(--main-color-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
 
-
+.refreshable-title:hover {
+    transform: scale(1.02);
+    opacity: 0.9;
+}

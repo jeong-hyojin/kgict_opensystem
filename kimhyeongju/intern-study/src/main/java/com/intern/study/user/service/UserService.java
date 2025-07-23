@@ -19,6 +19,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private static final boolean ALERT_ENABLED = true;
+    private static final boolean ALERT_DISABLED = false;
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -44,6 +47,7 @@ public class UserService {
         String code = username.equals("success") ? "SUCCESS" : "FAIL";
         response.put("code", code);
         response.put("data", data);
+        response.put("alertEnabled", true);
         return response;
     }
 
@@ -64,6 +68,7 @@ public class UserService {
             response.put("message", username + "는 이미 존재하는 아이디 입니다.");
         }
         response.put("data", data);
+        response.put("alertEnabled", true);
         return response;
     }
 
@@ -80,6 +85,7 @@ public class UserService {
             message = username + "는 이미 존재하는 아이디 입니다.";
         }
         response.put("username", username);
+        response.put("alertEnabled", true);
 
         return ApiResponse.builder()
                 .code(code)
@@ -99,10 +105,10 @@ public class UserService {
             UserEntity entity = request.toEntity();
             UserEntity savedEntity = userRepository.save(entity);
 
-            return new ApiResponse<>("SUCCESS", "회원가입에 성공하였습니다.", savedEntity.getId());
+            return new ApiResponse<>("SUCCESS", ALERT_ENABLED, "회원가입에 성공하였습니다.", savedEntity.getId());
         } catch (Exception e) {
             log.error("회원가입 중 예외 발생", e);
-            return new ApiResponse<>("FAIL", "회원가입 중 오류가 발생했습니다.", null);
+            return new ApiResponse<>("FAIL", ALERT_ENABLED, "회원가입 중 오류가 발생했습니다.", null);
         }
     }
 
@@ -114,17 +120,17 @@ public class UserService {
         Optional<UserEntity> userOpt = userRepository.findByUserId(userId);
 
         if (userOpt.isEmpty()) {
-            return new ApiResponse<>("FAIL", "존재하지 않은 아이디 입니다.", null);
+            return new ApiResponse<>("FAIL", ALERT_ENABLED, "존재하지 않은 아이디 입니다.", null);
         }
 
         UserEntity entity = userOpt.get();
 
         if (!passwordEncoder.matches(password, entity.getPassword())) {
-            return new ApiResponse<>("FAIL", "비밀번호가 일치하지 않습니다.", null);
+            return new ApiResponse<>("FAIL", ALERT_ENABLED, "비밀번호가 일치하지 않습니다.", null);
         }
 
         UserLoginResponseDto response = new UserLoginResponseDto(entity.getUserId(), entity.getUsername(), entity.getRole());
-        return new ApiResponse<>("SUCCESS", "로그인 성공", response);
+        return new ApiResponse<>("SUCCESS", ALERT_ENABLED, "로그인 성공", response);
     }
 
     @Transactional
@@ -136,16 +142,16 @@ public class UserService {
             Optional<UserEntity> userOpt = userRepository.findByUserId(userId);
 
             if (userOpt.isEmpty()) {
-                return new ApiResponse<>("FAIL", "해당 사용자를 찾을 수 없습니다.", null);
+                return new ApiResponse<>("FAIL", ALERT_ENABLED, "해당 사용자를 찾을 수 없습니다.", null);
             }
 
             UserEntity entity = userOpt.get();
             UserLoginResponseDto response = new UserLoginResponseDto(entity.getUserId(), entity.getUsername(), entity.getRole());
             log.info(response.toString());
-            return new ApiResponse<>("SUCCESS", "조회 성공", response);
+            return new ApiResponse<>("SUCCESS", ALERT_DISABLED, "조회 성공", response);
         } catch (Exception e) {
             log.error("사용자 조회 중 예외 발생", e);
-            return new ApiResponse<>("FAIL", "조회 처리 중 오류가 발생했습니다.", null);
+            return new ApiResponse<>("FAIL", ALERT_ENABLED, "조회 처리 중 오류가 발생했습니다.", null);
         }
     }
 }

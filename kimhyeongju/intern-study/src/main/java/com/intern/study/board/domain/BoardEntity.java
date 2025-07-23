@@ -44,13 +44,25 @@ public class BoardEntity extends BaseEntity {
             UserEntity user,
             String title,
             String content,
-            String passowrd
+            String passoword
     ) {
         return BoardEntity.builder()
                 .user(user)
                 .title(title)
                 .content(content)
-                .password(passowrd)
+                .password(passoword)
                 .build();
+    }
+
+    public void updateTitle(String title){
+        this.title = title;
+    }
+
+    public void updateContent(String content){
+        this.content = content;
+    }
+
+    public void updatePassword(String password){
+        this.password = password;
     }
 }

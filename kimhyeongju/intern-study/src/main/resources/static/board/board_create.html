@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>createBoardForm</title>
-    <link rel="stylesheet" href="/css/board_create.css">
+    <link rel="stylesheet" href="/css/board_create_update.css">
 </head>
 <body>
 <div class="board-container">
@@ -59,7 +59,6 @@
         })
         .then(response => {
             // 서버에서 보낸 응답 alert
-            AlertUtil.showSuccess(response.data);
             location.href = "/board/board_list.html";
         })
         .catch(error => {

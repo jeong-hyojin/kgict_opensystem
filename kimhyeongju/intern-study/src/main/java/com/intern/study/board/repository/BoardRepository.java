@@ -12,7 +12,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity,Long> {
     @Query("""
         SELECT new com.intern.study.board.dto.response.BoardResponseV1(
             b.id, 
-            u.id,
+            u.userId,
             u.username,
             b.title, 
             b.content,
@@ -27,7 +27,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity,Long> {
     @Query("""
         SELECT new com.intern.study.board.dto.response.BoardResponseV1(
             b.id, 
-            u.id,
+            u.userId,
             u.username,
             b.title, 
             b.content,

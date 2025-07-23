@@ -88,15 +88,17 @@ async function del(url, params = {}) {
  * - 실패 시 showError() 후 예외 throw
  */
 async function handleApiResponse(response) {
-    const {code, message, data} = response.data;
+    const {code, alertEnabled, message, data} = response.data;
     
 	if(code != "SUCCESS") {
 		await AlertUtil.showError(message);
 		return null;
 	}
-	
-	await AlertUtil.showSuccess(message);
-	
+
+    if(alertEnabled){
+        await AlertUtil.showSuccess(message);
+    }
+
 	return data;
 }
 

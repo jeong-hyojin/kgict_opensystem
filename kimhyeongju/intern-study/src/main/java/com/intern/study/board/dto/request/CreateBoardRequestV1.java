@@ -5,13 +5,13 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class BoardCreateRequestV1 {
+public class CreateBoardRequestV1 {
     private String userId;
     private String title;
     private String content;
     private String password;
 
-    public BoardCreateRequestV1(
+    public CreateBoardRequestV1(
             String userId,
             String title,
             String content,

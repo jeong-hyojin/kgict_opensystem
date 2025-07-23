@@ -1,8 +1,9 @@
 package com.intern.study.board.controller;
 
 import com.intern.study.board.domain.BoardEntity;
-import com.intern.study.board.dto.request.BoardCreateRequestV1;
-import com.intern.study.board.dto.request.BoardSearchRequestV1;
+import com.intern.study.board.dto.request.CreateBoardRequestV1;
+import com.intern.study.board.dto.request.SearchBoardRequestV1;
+import com.intern.study.board.dto.request.UpdateBoardRequestV1;
 import com.intern.study.board.dto.response.BoardResponseV1;
 import com.intern.study.board.dto.response.CreateBoardResponseV1;
 import com.intern.study.board.service.BoardMapper;
@@ -19,13 +20,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/board")
 public class BoardControllerV1 {
 
+    private static final boolean ALERT_ENABLED = true;
+    private static final boolean ALERT_DISABLED = false;
+
     private final BoardService boardService;
     private final BoardMapper mapper;
 
 
     @PostMapping
     public ApiResponse createBoard(
-            @RequestBody BoardCreateRequestV1 request
+            @RequestBody CreateBoardRequestV1 request
     ) {
         log.info("[게시글 생성 요청] : " + request.toString());
         Result<BoardEntity> result = boardService.createBoard(
@@ -40,7 +44,7 @@ public class BoardControllerV1 {
         }
 
         CreateBoardResponseV1 response = mapper.toCreateBoardResponse(result.getData());
-        return ApiResponse.success(response);
+        return ApiResponse.success(response,ALERT_ENABLED);
     }
 
     @GetMapping("/{boardId}")
@@ -55,7 +59,7 @@ public class BoardControllerV1 {
         }
 
         BoardResponseV1 response = mapper.toBoardResponse(result.getData());
-        return ApiResponse.success(response);
+        return ApiResponse.success(response,ALERT_DISABLED);
 
     }
 
@@ -63,10 +67,27 @@ public class BoardControllerV1 {
     public ApiResponse searchBoards(
             @RequestParam(defaultValue = "0") final int page,
             @RequestParam(defaultValue = "10") final int size,
-            @ModelAttribute BoardSearchRequestV1 request
+            @ModelAttribute SearchBoardRequestV1 request
     ) {
         log.info("[게시글 search 요청] page: " + page + " size: " + size + " query: " + request.toString());
-        return ApiResponse.success(boardService.searchBoards(request.getQuery(), page, size));
+        return ApiResponse.success(boardService.searchBoards(request.getQuery(), page, size),ALERT_DISABLED);
+    }
+
+    @PutMapping("/{boardId}")
+    public ApiResponse updateBoard(
+            @PathVariable Long boardId,
+            @RequestBody UpdateBoardRequestV1 request
+    ) {
+        log.info("[게시글 updatd 요청] : " + request.toString());
+        Result<BoardEntity> result = boardService.updateBoard(
+                boardId,
+                request.getUserId(),
+                request.getTitle(),
+                request.getContent(),
+                request.getPassword()
+        );
+        BoardResponseV1 response = mapper.toBoardResponse(result.getData());
+        return ApiResponse.success(response, ALERT_ENABLED);
     }
 
 

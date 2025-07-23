@@ -50,20 +50,10 @@ public class BoardService {
             Long boardId
     ){
         Optional<BoardEntity> boardOpt = boardRepository.findById(boardId);
-
-        String errorMessage = "유효하지 않은 boardId: " + boardId;
-        // 유효성 검사 1: 올바른 boardId
-        if(boardOpt.isEmpty()) {
-            return Result.fail(errorMessage);
+        if (!isValid(boardOpt)) {
+            return Result.fail("유효하지 않은 boardId: " + boardId);
         }
-
-        // 유효성 검사 2 : 삭제 유무
-        BoardEntity board = boardOpt.get();
-        if(board.getIsDeleted()){
-            return  Result.fail(errorMessage);
-        }
-
-        return Result.success(board);
+        return Result.success(boardOpt.get());
     }
 
     public Pagination<BoardResponseV1> searchBoards(
@@ -85,6 +75,37 @@ public class BoardService {
                 result.getTotalPages(),
                 result.getContent()
         );
+    }
+
+    public Result<BoardEntity> updateBoard(
+            Long boardId,
+            String userId,
+            String title,
+            String content,
+            String password
+    ) {
+        Optional<BoardEntity> boardOpt = boardRepository.findById(boardId);
+        if (!isValid(boardOpt)) {
+            return Result.fail("유효하지 않은 boardId: " + boardId);
+        }
+
+        BoardEntity board = boardOpt.get();
+        if(!isUserAuthorized(userId,board.getUser().getUserId())){
+            return Result.fail("수정에 대한 권한이 없습니다. userId: " + userId);
+        }
+
+        board.updateTitle(title);
+        board.updateContent(content);
+        board.updatePassword(password);
+        return Result.success(boardRepository.save(board));
+    }
+
+    private boolean isValid(Optional<BoardEntity> boardOpt) {
+        return boardOpt.isPresent() && !boardOpt.get().getIsDeleted();
+    }
+
+    private boolean isUserAuthorized(String localUserId, String boardUserId){
+        return localUserId.equals(boardUserId);
     }
 
 }

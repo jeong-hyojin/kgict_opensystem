@@ -19,7 +19,7 @@ public class BoardMapper {
     public BoardResponseV1 toBoardResponse(BoardEntity entity){
         return new BoardResponseV1(
                 entity.getId(),
-                entity.getUser().getId(),
+                entity.getUser().getUserId(),
                 entity.getUser().getUsername(),
                 entity.getTitle(),
                 entity.getContent(),

@@ -16,7 +16,17 @@
 </body>
 <script src="/js/common.js"></script>
 <script>
-    // 뒤로가기
+    // 뒤로 가기
+    function goBack() {
+        history.back();
+    }
+
+    // 로그아웃 처리 (세션 제거는 서버에서, 여기선 로컬 스토리지만)
+    function logout() {
+        localStorage.clear();
+        location.href = "/login.html";
+    }
+
     async function loadUserInfo() {
         const userId = localStorage.getItem("userId");
 
