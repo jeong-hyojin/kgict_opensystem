@@ -1,22 +1,12 @@
 package com.intern.study.board.controller;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import lombok.Data;
+import com.intern.study.board.dto.request.BoardCreateRequest;
+import com.intern.study.board.dto.request.BoardUpdateRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -29,7 +19,7 @@ public class BoardController{
 	public ResponseEntity<Map<String, Object>> createBoard(
 		@RequestBody BoardCreateRequest request
 	) {
-		log.info("[게시물 생성 요청] title: " + request.title + " content: " + request.content + " password: " + request.password);
+		log.info("[게시물 생성 요청] title: " + request.getTitle() + " content: " + request.getContent() + " password: " + request.getPassword());
 		String uuid = UUID.randomUUID().toString();
 		repository.add(uuid);
 
@@ -51,13 +41,13 @@ public class BoardController{
 	public ResponseEntity<Map<String, Object>> updateBoard(
 		@RequestBody BoardUpdateRequest request
 	) {
-		log.info("[게시물 수정 요청] boardId: " + request.boardId + " content: " + request.content);
+		log.info("[게시물 수정 요청] boardId: " + request.getBoardId() + " content: " + request.getContent());
 
 		// 게시글 수정
 
 		Map<String, Object> body = new HashMap<>();
 
-		String uuid = request.boardId;
+		String uuid = request.getBoardId();
 		if(repository.contains(uuid)) {
 			body.put("success", true);
 		    body.put("message", "게시물이 수정되었습니다.");
@@ -89,18 +79,4 @@ public class BoardController{
 		    return ResponseEntity.ok(body);
 		}
 	}
-
-	@Data
-	public static class BoardCreateRequest {
-	    private String title;
-	    private String content;
-	    private String password;
-	}
-
-	@Data
-	public static class BoardUpdateRequest {
-	    private String boardId;
-	    private String content;
-	}
-
 }

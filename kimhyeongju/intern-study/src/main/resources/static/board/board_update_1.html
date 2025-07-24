@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>updateBoardForm</title>
+    <link rel="stylesheet" href="css/board.css">
+</head>
+<body>
+    <h2>게시글 수정 페이지</h2>
+    <form id="updateBoardForm">
+        <div>
+            <label for = "boardId"> 게시물 id </label><br/>
+            <input type="text" id="boardId" name="boardId"/>
+        </div>
+
+        <div>
+            <label for="content"> 내용 </label><br/>
+            <textarea id="content" name="content" rows="5" cols="50"></textarea>
+        </div>
+  
+        <button type="submit"> 수정하기 </button>
+    </form>
+</body>
+<script src="/js/common.js"></script>
+<script>
+    document.getElementById("updateBoardForm").addEventListener("submit", handleSubmit);
+
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        const data = getData();
+
+        // validation 체크
+        const error = isValid(data);
+        if (error) {
+        	AlertUtil.showError(error);
+            return;
+        }
+
+     	// 게시글 업데이트 요청
+        ApiUtil.put("/board", {
+        	boardId: data.boardId,
+            content: data.content,
+        })
+        .then(response => {
+        	if (response.success === true) {
+                AlertUtil.showSuccess(response.message);
+                document.getElementById("updateBoardForm").reset();
+            } else {
+				AlertUtil.showError("존재하지 않은 게시글입니다.");
+            }
+        })
+        .catch(error => {
+            // ApiUtil 내부에서 showError을 하기 때문에, 로그 생성
+            //console.error("게시글 수정 실패", error);
+        });
+    }
+    
+    // 폼 데이터 반환 메서드
+    function getData() {
+        return {
+        	boardId: document.getElementById("boardId").value.trim(),
+            content: document.getElementById("content").value.trim(),
+        };
+    }
+
+    // 폼 데이터 유휴성 검사 메서드
+    function isValid({ content }) {
+        if (content.length < 20) {
+            return "내용은 최소 20자 이상이어야 합니다.";
+        }
+        return null;
+    }
+</script>
+</html>
+

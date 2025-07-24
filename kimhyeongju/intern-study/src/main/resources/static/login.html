@@ -3,16 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
-    <h2> 로그인 </h2>
-
-    <form id="loginForm">
-        <input type="text"        id="userId"   placeholder="아이디"/>
-        <input type="password"    id="password"   placeholder="비밀번호"/>
-        <button type="submit">로그인</button>
-    </form>
+    <div class="login-container">
+        <form id="loginForm">
+            <img src="/img/logo.png" alt="Login Banner" class="login-banner">
+            <input type="text" id="userId" placeholder="아이디"/>
+            <input type="password" id="password" placeholder="비밀번호"/>
+            <button type="submit">로그인</button>
+            <br>
+            <br>
+            <div class="signup-link">
+                <a href="/user/signup_jpa.html">회원가입</a>
+            </div>
+        </form>
+    </div>
+    <div id="globalModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3 class="modal-title">알림</h3>
+            <div class="modal-body">내용이 여기에 표시됩니다.</div>
+            <div class="modal-footer">
+                <button id="modalConfirmBtn" class="modal-button">확인</button>
+            </div>
+        </div>
+    </div>
 </body>
 <script src="/js/common.js"></script>
 <script>
@@ -21,18 +37,54 @@
         const userId   = StringUtil.trim(document.getElementById("userId").value);
         const password = StringUtil.trim(document.getElementById("password").value);
 
-        const result = await ApiUtil.post("/user/login",{ userId, password });
+        const result = await ApiUtil.post("/api/user/login",{ userId, password });
 
         if(result){
-            const { userId, username, email } = result;
-
-            //권한 별 페이지 이동 (관리자/일반)
-            if("admin01" === userId){
-                lcoation.href = '/admin.html';
+            const { userId, username, role } = result;
+            if(role === "TEMP"){
+                showPasswordChangeModal(userId);
+                return;
             }else{
-                location.href = '/board/board_list.html';
+                // 로그인 성공 시 세션에 사용자 정보 저장
+                localStorage.setItem("userId", userId);
+                localStorage.setItem("username", username);
+
+                const url = (role==='ADMIN' ? '/admin/user_list.html' : '/board/board_list.html');
+                location.href = url;
             }
         }
     })
+
+    function showPasswordChangeModal(userId) {
+        const formHtml = `
+        <div>
+            <input type="password" id="newPassword" placeholder="새 비밀번호" style="width: 100%; margin-bottom: 10px;" />
+            <input type="password" id="confirmPassword" placeholder="비밀번호 확인" style="width: 100%;" />
+        </div>
+    `;
+
+        Modal.showFormModal({
+            title: '비밀번호 변경',
+            formContent: formHtml,
+            onConfirm: async () => {
+                const newPassword = document.getElementById("newPassword").value;
+                const confirmPassword = document.getElementById("confirmPassword").value;
+
+                if (newPassword !== confirmPassword) {
+                    alert("비밀번호가 일치하지 않습니다.");
+                    return;
+                }
+
+                const response = await ApiUtil.post("/api/user/change-password", {
+                    userId,
+                    newPassword
+                });
+
+                if(response){
+                    location.href = "/login.html";
+                }
+            }
+        });
+    }
 </script>
 </html>

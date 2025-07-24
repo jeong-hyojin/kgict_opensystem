@@ -1,16 +1,13 @@
 package com.intern.study.user.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@ToString
 @Table(name = "p_user")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -48,5 +45,13 @@ public class UserEntity {
 		this.role     = role;
 		this.isActive = isActive;
 		this.regDate  = regDate;
+	}
+
+	public void changePassword(String password) {
+		this.password = password;
+	}
+
+	public void changeRole(){
+		this.role = "USER";
 	}
 }
