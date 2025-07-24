@@ -1,9 +1,12 @@
 package com.intern.study.admin.controller;
 
+import com.intern.study.admin.domain.AdminUpdateRequestDto;
 import com.intern.study.admin.domain.AdminUserAddRequestDto;
 import com.intern.study.common.ApiResponse;
 import com.intern.study.user.domain.UserEntity;
+import com.intern.study.user.domain.UserResponseDto;
 import com.intern.study.user.repository.UserRepository;
+import com.intern.study.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +21,7 @@ import java.util.Optional;
 public class AdminController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     //사용자 전체 조회
     // userRepository.findAll() 도 dto로 변결할 예정(Service 단)
@@ -40,8 +44,10 @@ public class AdminController {
                 return new ApiResponse<>("FAIL","해당 사용자를 찾을 수 없습니다.", null);
             }
             UserEntity user = userOpt.get();
+            //log.info("UserEntity : "+  user.toString());
+            UserResponseDto responseDto = new UserResponseDto(user);
 
-            return new ApiResponse<>("SUCCESS", "조회 성공",user);
+            return new ApiResponse<>("SUCCESS", "조회 성공",responseDto);
 
         }catch (Exception e) {
             log.error("사용자 조회 중 에러 발생",e);
@@ -99,7 +105,25 @@ public class AdminController {
     }
 
     //사용자 수정
-    //@PutMapping("")
+    @PutMapping("/update")
+    public ApiResponse<?> updateUser(@RequestBody AdminUpdateRequestDto requestDto){
 
+        try{
+            UserEntity user = userService.getUser(requestDto.getUserId());
+
+            user.setUserId(requestDto.getUserId());
+            user.setPassword(requestDto.getPassword());
+            user.setEmail(requestDto.getEmail());
+            user.setRole(requestDto.getRole());
+
+            userRepository.save(user);
+
+            return new ApiResponse<>("SUCCESS", "사용자 수정에 성공하셨습니다.",user.getUserId());
+
+        }catch (Exception e ){
+            log.error("사용자 수정 중 예외 발생",e);
+            return new ApiResponse<>("FAIL", "사용자 수정 중 오류가 발생했습니다.", null);
+        }
+    }
 
 }

@@ -12,7 +12,6 @@
   <button class="btn btn-secondary" onclick="goBack()">돌아가기</button>
   <button class = "btn btn-primary" onclick="goUpdate()">수정하기</button>
   <button class = "btn btn-danger" onclick="goDelete()">삭제하기</button>
-  <button class="btn btn-outline-danger float-right" onclick="logout()">로그아웃</button>
 </div>
 
 </body>
@@ -41,12 +40,6 @@
     //const result = await ApiUtil.del("/api/boards/delete", { params: { id: id } });
 
     location.href = "board_list.html";
-  }
-
-  // 로그아웃 처리 (세션 제거는 서버에서, 여기선 로컬 스토리지만)
-  function logout() {
-    localStorage.clear();
-    location.href = "/login.html";
   }
 
   // 사용자 정보 조회

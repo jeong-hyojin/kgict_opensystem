@@ -6,38 +6,48 @@
     <title>사용자 - 게시글 목록</title>
 </head>
 <body class ="p-4">
-<h2 class = "mb-4">게시글 목록</h2>
 
-<div class = "mb-3 text-right">
-    <button class ="btn btn-primary" id ="boardadd" onclick="addBoardModal()"> + 게시글 추가</button>
-</div>
+    <div class = "mb-3 text-right">
+        <button class="btn btn-outline-danger float-right" onclick="logout()">로그아웃</button>
+    </div>
 
-<table  id ="boardTable"
-        class = "table table-bordered table-hover"
-        data-toggle ="table"
-        data-serarch = "true"
-        data-pagination = "true"
-        data-page-size = "5">
-    <thead>
-    <tr>
-        <th data-field ="id" data-sortable="true" data-formatter="idFormatter">게시글 번호</th>
-        <th data-field ="uuid" data-sortable="true">게시글 UUID</th>
-        <th data-field ="title" data-sortable="true">제목</th>
-        <th data-field="updatedDate" data-sortable="true">수정일</th>
-    </tr>
-    </thead>
+    <h2 class = "mb-4">게시글 목록</h2>
 
-</table>
+    <div class = "mb-3 text-right">
+        <button class ="btn btn-primary" id ="boardadd" onclick="addBoardModal()"> + 게시글 추가</button>
+    </div>
+
+    <table  id ="boardTable"
+            class = "table table-bordered table-hover"
+            data-toggle ="table"
+            data-serarch = "true"
+            data-pagination = "true"
+            data-page-size = "5">
+        <thead>
+        <tr>
+            <th data-field ="id" data-sortable="true" data-formatter="idFormatter">게시글 번호</th>
+            <th data-field ="uuid" data-sortable="true">게시글 UUID</th>
+            <th data-field ="title" data-sortable="true">제목</th>
+            <th data-field="updatedDate" data-sortable="true">수정일</th>
+        </tr>
+        </thead>
+
+    </table>
 
 </body>
 <script src = "/js/common.js"></script>
 <script>
 
+    // 로그아웃 처리: 로컬 스토리지 제거
+    function logout() {
+        localStorage.clear();
+        location.href = "/login.html";
+    }
+
     // 게시글 추가하기
     function addBoardModal(){
         location.href = "board_write.html";
     }
-
 
     async function loadBoardTable(){
         const boards = await ApiUtil.get("/api/boards/board-list");

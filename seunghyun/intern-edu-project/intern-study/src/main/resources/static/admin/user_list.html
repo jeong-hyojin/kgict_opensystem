@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,11 @@
     <title>관리자 - 사용자 목록</title>
 </head>
 <body class ="p-4">
+
+    <div class = "mb-3 text-right">
+        <button class="btn btn-outline-danger float-right" onclick="logout()">로그아웃</button>
+    </div>
+
     <h2 class = "mb-4">사용자 목록</h2>
 
     <div class = "mb-3 text-right">
@@ -14,19 +20,20 @@
     <table  id ="userTable"
             class = "table table-bordered table-hover"
             data-toggle ="table"
-            data-serarch = "true"
+            data-serarch= "true"
             data-pagination = "true"
             data-page-size = "5">
         <thead>
-            <tr>
-                <th data-field ="role"      data-sortable="true">권한</th>
-                <th data-field ="userId"    data-sortable="true"        data-formatter ="userIdFormatter">아이디</th>
-                <th data-field ="username"  data-sortable="true">이름</th>
-                <th data-field ="email"     data-sortable="true">이메일</th>
-                <th data-field ="isActive"  data-sortable="true">사용여부</th>
-                <th data-field ="actions"   data-events ="actionEvents" data-formatter="actionFormatter">관리</th>
+        <tr>
+            <th data-formatter="rowIndexFormatter">No.</th>
+            <th data-field ="userId"    data-sortable="true"        data-formatter ="userIdFormatter">아이디</th>
+            <th data-field ="username"  data-sortable="true">이름</th>
+            <th data-field ="email"     data-sortable="true">이메일</th>
+            <th data-field ="role"      data-sortable="true">권한</th>
+            <th data-field ="isActive"  data-sortable="true">사용여부</th>
+            <th data-field ="actions"   data-events ="actionEvents" data-formatter="actionFormatter">관리</th>
 
-            </tr>
+        </tr>
         </thead>
     </table>
     <div id="globalModal" style="display:none;">
@@ -44,6 +51,12 @@
 </body>
 <script src = "/js/common.js"></script>
 <script>
+
+    // 로그아웃 처리: 로컬 스토리지 제거
+    function logout() {
+        localStorage.clear();
+        location.href = "/login.html";
+    }
 
     // 사용자 추가용 모달 내용
     const formHtml = `
@@ -78,6 +91,16 @@
               placeholder = "이메일을 입력하세요"
               required />
           </div>
+          <div class="form-group mb-3">
+            <label for="email" class="form-label">전화번호</label>
+            <input
+              type        = "text"
+              class       = "form-control"
+              id          = "phone"
+              name        = "phone"
+              placeholder = "전화번호를 입력하세요"
+              required />
+          </div>
         </form>
      `;
 
@@ -93,11 +116,20 @@
 
     //삭제 버튼 렌더링
     function actionFormatter(value, row){
-        return `<button class ="btn btn-danger btn-sm delete-btn">삭제</button>`
+        return `<button class ="btn btn-danger btn-sm delete-btn">삭제</button>
+                <button class ="btn btn-warning btn-sm update-btn">수정</button>
+                `;
     }
 
-    //삭제 버튼 클릭 시
+    // Bootstrap 순번 포매터 (index는 0부터 시작함)
+    function rowIndexFormatter(value, row, index) {
+        return index + 1;
+    }
+
+    //삭제 or 수정 버튼 클릭 시
     window.actionEvents = {
+
+        //삭제 버튼
         'click .delete-btn' : async function(e, value, row){
             const confirmed = await AlertUtil.showConfirm("정말 삭제하시겠습니까?");
             if(!confirmed) return;
@@ -109,9 +141,14 @@
             if(result){
                 await loadUserTable(); // 비동기 처리 적용
             }
+        },
 
+        //수정 버튼
+        'click .update-btn': function (e, value, row) {
+            location.href = `user_update.html?userId=${encodeURIComponent(row.userId)}`;
         }
-    }
+
+    };
 
     //사용자 추가 버튼 클릭 시,
     document.getElementById('useradd').onclick = function (){
@@ -123,7 +160,8 @@
                 const data = {
                     userId : form.userId.value,
                     username : form.username.value,
-                    email : form.email.value
+                    email : form.email.value,
+                    phone : form.phone.value,
                 };
 
                 const result = await ApiUtil.post('/api/admin/user-add', data);
@@ -135,9 +173,7 @@
             }
 
         });
-
     }
-
 
     //초기 로딩
     document.addEventListener("DOMContentLoaded", function (){

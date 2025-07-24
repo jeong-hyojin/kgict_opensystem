@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -19,6 +20,10 @@
         <label for="content">수정할 내용</label>
         <input type="text" id="content" required />
     </div>
+    <div>
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" required/>
+    </div>
 
     <button type="submit">수정 제출</button>
 </form>
@@ -28,16 +33,38 @@
 <script>
 
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("id"); // URL에서 id 추출
+    const id = params.get("id").trim(); // URL에서 id 추출
     const updateForm = document.getElementById("updateForm");
 
+    if(!id) {
+        AlertUtil.showError("게시글 ID가 존재하지 않습니다.");
+    }
+
+    //게시글 불러오기
+    async function loadBoard() {
+        try {
+            const board = await ApiUtil.get(`/api/boards/${id}`);
+            if (!board) {
+                await AlertUtil.showError("게시글 정보를 불러오지 못했습니다.");
+                return;
+            }
+            document.getElementById("title").value = board.title;
+            document.getElementById("content").value = board.content;
+        }catch (e) {
+
+            await AlertUtil.showError("게시글 상세 내용을 불러오지 못했습니다.");
+        }
+    }
+
+
     // 게시글 수정 이벤트
-    updateForm.addEventListener("submit", async function (e) {
+    async function formHandler(e) {
         e.preventDefault();
 
         //수정할 title, content 불러오기
         const title 	= document.getElementById("title").value.trim();
         const content	= document.getElementById("content").value.trim();
+        const password 	= document.getElementById("password").value.trim();
 
         // 유효성 검사
         if (!ValidationUtil.isNotEmpty(title)) {
@@ -48,16 +75,27 @@
             AlertUtil.showWarning("내용을 입력해주세요");
             return;
         }
+        if (!ValidationUtil.isNotEmpty(password)) {
+            AlertUtil.showWarning("비밀번호를 입력해주세요");
+            return;
+        }
 
         // ApiUtil PUT 요청
         const result = await ApiUtil.put("/api/boards/update", {
             id : id,
             title: title,
-            content: content
+            content: content,
+            password : password
         });
 
         location.href = "board_list.html";
+    }
 
+    // 초기 로드 시 게시글 불러오기
+    document.addEventListener("DOMContentLoaded", () => {
+        // common.js 호출 이후 실행되도록
+        setTimeout(loadBoard, 100);
+        updateForm.addEventListener("submit", formHandler);
     });
 
 </script>

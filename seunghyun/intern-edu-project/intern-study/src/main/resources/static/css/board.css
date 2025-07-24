@@ -1,9 +1,9 @@
 /* board.css - 게시판 폼 공통 스타일 */
-body {
+body{
   background: #f7f8fa;
   font-family: 'Noto Sans KR', Arial, sans-serif;
   margin: 0;
-  padding: 0;
+  padding: 0px;
 }
 
 h2 {
@@ -79,8 +79,7 @@ button[type="submit"]:hover {
   margin-top: 2px;
 }
 
-  /* 추가적인 안내 메시지, 에러 메시지 등 */
-  span, p {
-    font-size: 15px;
-  }
-  
+/* 추가적인 안내 메시지, 에러 메시지 등 */
+span, p {
+  font-size: 15px;
+}

@@ -4,10 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.intern.study.common.ApiResponse;
-import com.intern.study.user.domain.UserEntity;
-import com.intern.study.user.domain.UserLoginRequestDto;
-import com.intern.study.user.domain.UserLoginResponseDto;
-import com.intern.study.user.domain.UserSignupRequestDto;
+import com.intern.study.user.domain.*;
 
 import com.intern.study.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -145,8 +142,8 @@ public class UserController {
 	@GetMapping("/{userId}")
 	public ApiResponse<?> userDetail(@PathVariable String userId){
 		try{
-			UserEntity user = userService.getUserDetail(userId);
-			return new ApiResponse<>("SUCCESS", "조회 성공", user);
+			UserResponseDto response = userService.getUserDto(userId);
+			return new ApiResponse<>("SUCCESS", "조회 성공", response);
 
 		}catch (IllegalArgumentException e) {
 			return new ApiResponse<>("Fail", e.getMessage(), null);
