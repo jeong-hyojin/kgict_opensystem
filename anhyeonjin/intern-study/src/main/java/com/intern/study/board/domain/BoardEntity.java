@@ -29,10 +29,18 @@ public class BoardEntity {
     private String password;
 
     @Column(nullable = false)
-    private String userId; // UserEntity.userId 와 매핑됨
+    private String userId;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @PrePersist
     public void prePersist() {
@@ -45,3 +53,4 @@ public class BoardEntity {
         updatedAt = LocalDateTime.now();
     }
 }
+

@@ -19,13 +19,13 @@ public class BoardController {
 
     // 게시글 작성
     @PostMapping("/write")
-    public Map<String, Object> writePost(@RequestBody Map<String, String> body) {
+    public ApiResponse<?> writePost(@RequestBody Map<String, String> body) {
         return boardService.writePost(body);
     }
 
     // 게시글 수정
     @PutMapping("/update")
-    public Map<String, Object> updatePost(@RequestBody Map<String, String> body) {
+    public ApiResponse<?> updatePost(@RequestBody Map<String, String> body) {
         return boardService.updatePost(body);
     }
 
