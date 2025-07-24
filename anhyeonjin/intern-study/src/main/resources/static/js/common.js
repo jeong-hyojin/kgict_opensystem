@@ -22,7 +22,7 @@
     , "/js/utils/ApiUtil.js"
     , "/js/utils/StringUtil.js"
     , "/js/utils/ValidationUtil.js"
-//    , '/js/utils/Modal.js'
+    , '/js/utils/Modal.js'
   ]; 
 
   // CSS 로드

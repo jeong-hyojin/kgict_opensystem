@@ -121,7 +121,7 @@ async function handleApiResponse(response) {
 function handleApiError(error) {
     if(error.response) {
         const msg = error.response.data?.message || '서버 오류가 발생했습니다.';
-        AlertUtil.showError(`[${error.response.status}] ${msg}`);
+        //AlertUtil.showError(`[${error.response.status}] ${msg}`);
     } else if(error.request) {
         AlertUtil.showError('서버로부터 응답이 없습니다.');
     } else {

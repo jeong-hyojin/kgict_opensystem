@@ -110,4 +110,19 @@ public class UserService {
             return new ApiResponse<>("FAIL", "조회 처리 중 오류가 발생했습니다.", null);
         }
     }
+
+    public ApiResponse<?> updatePassword(String userId, String newPassword) {
+        Optional<UserEntity> userOpt = userRepository.findByUserId(userId);
+        if (userOpt.isEmpty()) {
+            return new ApiResponse<>("FAIL", "해당 사용자가 존재하지 않습니다.", null);
+        }
+
+        UserEntity user = userOpt.get();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setRole("USER");
+
+        userRepository.save(user);
+        return new ApiResponse<>("SUCCESS", "비밀번호가 성공적으로 변경되었습니다.", null);
+    }
+
 }

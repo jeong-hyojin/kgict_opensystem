@@ -4,16 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.time.LocalDateTime; // ✅ java.util.Date 대신 java.time.LocalDateTime 사용
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -30,5 +27,5 @@ public class UserEntity {
     private String phone;
     private String role;
     private Boolean isActive;
-    private LocalDateTime regDate; // ✅ reDate → regDate 로 이름도 명확하게 변경
+    private LocalDateTime regDate;
 }

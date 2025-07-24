@@ -49,4 +49,17 @@ public class UserController {
 		return userService.userDetail(userId);
 	}
 
+	@PostMapping("/update-password")
+	public ApiResponse<?> updatePassword(@RequestBody Map<String, String> body) {
+		String userId = body.get("userId");
+		String newPassword = body.get("newPassword");
+
+		try {
+			return userService.updatePassword(userId, newPassword);
+		} catch (Exception e) {
+			log.error("비밀번호 변경 중 예외 발생", e);
+			return new ApiResponse<>("FAIL", "비밀번호 변경 중 오류가 발생했습니다.", null);
+		}
+	}
+
 }
