@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용자 목록</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <h2 class="mb-4">사용자 목록</h2>
+    <div class="mb-3 text-end">
+        <button class="btn btn-primary" id="useradd">+ 사용자 추가</button>
+    </div>
+    <div class="table-responsive">
+        <table id="userTable"
+               class="table table-bordered table-hover align-middle"
+               data-toggle="table"
+               data-search="true"
+               data-pagination="true"
+               data-page-size="5">
+            <thead class="table-light">
+            <tr>
+                <th data-field="role" data-sortable="true">권한</th>
+                <th data-field="userId" data-sortable="true" data-formatter="userIdFormatter">아이디</th>
+                <th data-field="username" data-sortable="true">이름</th>
+                <th data-field="email" data-sortable="true">이메일</th>
+                <th data-field="isActive" data-sortable="true">사용여부</th>
+                <th data-field="actions">관리</th> <!-- formatter 제거 -->
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<script src="/js/common.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.1/dist/themes/bootstrap-table-bs5/bootstrap-table-bs5.min.js"></script>
+
+<script>
+    async function loadUserTable() {
+      const users = await ApiUtil.get("/api/admin/user-list");
+
+      // 버튼 포함 HTML로 actions 필드 구성
+      const usersWithAction = users.map(user => ({
+        ...user,
+        actions: `<button class="btn btn-danger btn-sm static-delete-btn" data-userid="${user.userId}">삭제</button>`
+      }));
+
+      $("#userTable").bootstrapTable('load', usersWithAction);
+
+      setTimeout(() => {
+        document.querySelectorAll(".static-delete-btn").forEach(button => {
+          button.addEventListener("click", async function () {
+            const userId = this.dataset.userid;
+            console.log("🗑 삭제 버튼 클릭됨:", userId);
+            const confirmed = await AlertUtil.showConfirm("정말 삭제하시겠습니까?");
+            if (!confirmed) return;
+            await ApiUtil.del(`/api/admin/user-delete/${userId}`);
+            loadUserTable();
+          });
+        });
+      }, 0);
+    }
+
+    function userIdFormatter(value, row) {
+      return `<a href="/admin/user_detail.html?userId=${encodeURIComponent(value)}" class="text-primary">${value}</a>`;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      $('#userTable').bootstrapTable();
+      loadUserTable();
+    });
+
+    const formHtml = `
+      <form id="addUserForm">
+        <div class="form-group mb-3">
+          <label for="userId" class="form-label">아이디</label>
+          <input type="text" class="form-control" id="userId" name="userId" placeholder="아이디를 입력하세요" required />
+        </div>
+        <div class="form-group mb-3">
+          <label for="username" class="form-label">이름</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="이름을 입력하세요" required />
+        </div>
+        <div class="form-group mb-3">
+          <label for="email" class="form-label">이메일</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력하세요" required />
+        </div>
+      </form>
+    `;
+
+    document.getElementById('useradd').onclick = function () {
+      console.log("사용자 추가 버튼 클릭됨");
+
+      Modal.showFormModal({
+        title: '사용자 추가',
+        formContent: formHtml,
+        onConfirm: async function () {
+          console.log("모달 확인 버튼 클릭됨");
+          const form = document.getElementById('addUserForm');
+          const data = {
+            userId: form.userId.value,
+            username: form.username.value,
+            email: form.email.value
+          };
+
+          const result = await ApiUtil.post('/api/admin/user-add', data);
+          if (result) {
+            console.log("사용자 추가 성공");
+            Modal.hideModal();
+            loadUserTable(); // reload instead of location.reload()
+          } else {
+            console.log("사용자 추가 실패");
+          }
+        }
+      });
+    };
+</script>
+
+<div id="globalModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1050;">
+    <div class="modal-content shadow bg-white rounded p-4 mx-auto mt-5" style="max-width: 500px;">
+        <div class="modal-header border-bottom-0">
+            <span class="modal-title fw-bold fs-5"></span>
+        </div>
+        <div class="modal-body mt-2"></div>
+        <div class="modal-footer border-top-0 d-flex justify-content-end mt-3">
+            <button id="modalConfirmBtn" class="btn btn-primary">확인</button>
+            <button type="button" class="btn btn-secondary" onclick="Modal.hideModal()">취소</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

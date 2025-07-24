@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+<h2 class="mb-4">내 정보</h2>
+<div id="userInfo" class="border p-3 bg-light"></div>
+
+<div class="mt-3">
+    <button class="btn btn-secondary" onClick="goBack()"><- 돌아가기</button>
+    <button class="btn btn-outline-danger float-right" onClick="logout()">로그아웃</button>
+</div>
+
+<script src="/js/common.js"></script>
+<script>
+    function goBack() {
+        history.back();
+    }
+
+    function logout(){
+        localStorage.clear();
+        location.href = "/login.html";
+    }
+
+    // 사용자 정보 조회
+    async function loadUserInfo() {
+        const userId = new URLSearchParams(location.search).get("userId");
+        const user = await ApiUtil.get(`/api/admin/${userId}`);
+
+        if (!user) return;
+
+        const html = `
+            <div><strong>아이디</strong>: ${user.userId}</div>
+            <div><strong>이름</strong>: ${user.username}</div>
+            <div><strong>이메일</strong>: ${user.email}</div>
+            <div><strong>권한</strong>: ${user.role}</div>
+            <div><strong>사용 여부</strong>: ${(user.isActive === true) ? "Y" : "N"}</div>
+        `;
+
+        document.getElementById("userInfo").innerHTML = html;
+    }
+
+    document.addEventListener("DOMContentLoaded", function(){
+        setTimeout(loadUserInfo, 100);
+    });
+</script>
+</body>
+</html>
