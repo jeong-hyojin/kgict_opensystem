@@ -78,7 +78,7 @@ public class AdminController {
 
             userRepository.delete(user);
 
-            return new ApiResponse<>("SUCCESS", "사용자가 성공적으로 삭제됐습니다.",null);
+            return new ApiResponse<>("SUCCESS", "사용자가 성공적으로 삭제됐습니다.",userId);
 
         } catch (Exception e) {
             log.error("사용자 삭제 중 예외 발생", e);
@@ -113,9 +113,13 @@ public class AdminController {
 
             user.setUserId(requestDto.getUserId());
             user.setPassword(requestDto.getPassword());
+            user.setUsername(requestDto.getUsername());
             user.setEmail(requestDto.getEmail());
+            user.setPhone(requestDto.getPhone());
             user.setRole(requestDto.getRole());
+            user.setIsActive(requestDto.getIsActive());
 
+            log.info("updateUser : " + user.toString());
             userRepository.save(user);
 
             return new ApiResponse<>("SUCCESS", "사용자 수정에 성공하셨습니다.",user.getUserId());

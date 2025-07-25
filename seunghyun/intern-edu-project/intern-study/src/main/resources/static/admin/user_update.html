@@ -10,7 +10,7 @@
 <form id="updateUserForm">
   <div>
     <label for="userId">사용자 ID</label>
-    <input type="text" id="userId" name="userId" readonly />
+    <input type="text" id="userId" name="userId" required readonly/>
   </div>
   <div>
     <label for="password">비밀번호</label>
@@ -105,13 +105,9 @@
       userId, password, username, email, phone, role, isActive
     };
 
-    try {
-      await ApiUtil.put(`/api/admin/update`, data);
-      await AlertUtil.showSuccess("사용자 정보가 성공적으로 수정되었습니다.");
-      location.href = "user_list.html";
-    } catch (err) {
-      await AlertUtil.showError("사용자 정보 수정에 실패했습니다.");
-    }
+    const result = await ApiUtil.put(`/api/admin/update`, data);
+
+    location.href = "user_list.html";
   });
 
   // 초기 로딩 시 사용자 정보 불러오기

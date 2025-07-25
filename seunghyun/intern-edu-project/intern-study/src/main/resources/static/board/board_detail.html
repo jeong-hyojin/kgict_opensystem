@@ -5,36 +5,59 @@
   <title>게시글 상세</title>
 </head>
 <body class="container p-4">
-<h2>게시글 상세</h2>
-<div id="boardInfo" class="border p-3 bg-light">게시글 내용</div>
+  <h2>게시글 상세</h2>
+  <div class="mb-3">
+    <label class="form-label">제목</label>
+    <input type="text" class="form-control" id="title" readonly>
+  </div>
 
-<div class="mt-3">
-  <button class="btn btn-secondary" onclick="goBack()">돌아가기</button>
-  <button class = "btn btn-primary" onclick="goUpdate()">수정하기</button>
-  <button class = "btn btn-danger" onclick="goDelete()">삭제하기</button>
-</div>
+  <div class="mb-3">
+    <label class="form-label">내용</label>
+    <textarea class="form-control" id="content" rows="6" readonly></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">작성일</label>
+    <input type="text" class="form-control" id="createdAt" readonly>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">수정일</label>
+    <input type="text" class="form-control" id="updatedAt" readonly>
+  </div>
+
+  <div class="mt-4">
+    <button class="btn btn-secondary" onclick="goBack()">돌아가기</button>
+    <button class="btn btn-primary" onclick="goUpdate()">수정하기</button>
+    <button class="btn btn-danger" onclick="goDelete()">삭제하기</button>
+  </div>
 
 </body>
 
 <script src="/js/common.js"></script>
 <script>
+
+  let uuid = "";
+
   // 뒤로 가기
   function goBack() {
     history.back();
   }
 
-  //게시글 수정하기
+  //게시글 수정 페이지 이동
   function goUpdate(){
-    const id = new URLSearchParams(location.search).get("id");
-    location.href = `board_update.html?id=${id}`;
+    //const uuid = new URLSearchParams(location.search).get("uuid");
+    location.href = `board_update.html?uuid=${uuid}`;
   }
 
   //게시글 삭제하기
   async function goDelete(){
-    const id = new URLSearchParams(location.search).get("id");
+    //const uuid = new URLSearchParams(location.search).get("uuid");
+
+    if (!uuid) return showError("잘못된 접근입니다.");
 
     // ApiUtil.del 요청 (PathVariable 방식)
-    const result = await ApiUtil.del(`/api/boards/delete/${id}`);
+    const result = await ApiUtil.del(`/api/boards/delete/${uuid}`);
 
     // ApiUtil.del 요청 (RequestParam 방식)
     //const result = await ApiUtil.del("/api/boards/delete", { params: { id: id } });
@@ -42,23 +65,20 @@
     location.href = "board_list.html";
   }
 
-  // 사용자 정보 조회
+  // 게시글 상세 조회
   async function loadBoardInfo() {
-    const boardId = new URLSearchParams(location.search).get("id");
-    const board = await ApiUtil.get(`/api/boards/${boardId}`);
+    uuid = new URLSearchParams(location.search).get("uuid");
+
+    if (!uuid) return showError("잘못된 접근입니다.");
+
+    const board = await ApiUtil.get(`/api/boards/${uuid}`);
     //console.log(board)
     if (!board) return; // ApiUtil 내부에서 showError 처리됨
 
-    const html = `
-      <div><strong>게시글 번호</strong> : ${board.id}</div>
-      <div><strong>게시글 UUID</strong> : ${board.uuid}</div>
-      <div><strong>제목</strong> : ${board.title}</div>
-      <div><strong>내용</strong> : ${board.content}</div>
-      <div><strong>작성 시간</strong> : ${board.createdDate}</div>
-      <div><strong>수정 시간</strong> : ${board.updatedDate}</div>
-    `;
-
-    document.getElementById("boardInfo").innerHTML = html;
+    document.getElementById("title").value = board.title;
+    document.getElementById("content").value = board.content;
+    document.getElementById("createdAt").value = new Date(board.createdAt).toLocaleString();
+    document.getElementById("updatedAt").value = new Date(board.updatedAt).toLocaleString();
   }
 
   document.addEventListener("DOMContentLoaded", function () {

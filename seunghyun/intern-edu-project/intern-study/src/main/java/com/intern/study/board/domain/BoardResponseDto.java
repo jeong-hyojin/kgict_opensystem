@@ -8,23 +8,21 @@ import java.time.LocalDateTime;
 @Data
 public class BoardResponseDto {
 
-    private Long id;
-    private Long UUID;
+    private String uuid;
     private String title;
     private String content;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyy-MM-dd HH:mm")
-    private LocalDateTime updatedDate;
+    private LocalDateTime updatedAt;
 
     public BoardResponseDto(BoardEntity board){
-        this.id = board.getId();
-        this.UUID = board.getUUID();
+        this.uuid = board.getUuid();
         this.title = board.getTitle();
         this.content = board.getContent();
-        this.createdDate = board.getCreatedDate();
-        this.updatedDate = board.getUpdatedDate();
+        this.createdAt = board.getCreatedAt();
+        this.updatedAt = board.getUpdatedAt();
     }
 }

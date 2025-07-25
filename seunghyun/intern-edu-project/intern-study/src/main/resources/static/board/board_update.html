@@ -33,17 +33,17 @@
 <script>
 
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("id").trim(); // URL에서 id 추출
+    const uuid = params.get("uuid").trim(); // URL에서 id 추출
     const updateForm = document.getElementById("updateForm");
 
-    if(!id) {
+    if(!uuid) {
         AlertUtil.showError("게시글 ID가 존재하지 않습니다.");
     }
 
     //게시글 불러오기
     async function loadBoard() {
         try {
-            const board = await ApiUtil.get(`/api/boards/${id}`);
+            const board = await ApiUtil.get(`/api/boards/${uuid}`);
             if (!board) {
                 await AlertUtil.showError("게시글 정보를 불러오지 못했습니다.");
                 return;
@@ -82,7 +82,7 @@
 
         // ApiUtil PUT 요청
         const result = await ApiUtil.put("/api/boards/update", {
-            id : id,
+            uuid : uuid,
             title: title,
             content: content,
             password : password

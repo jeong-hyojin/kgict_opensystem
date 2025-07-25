@@ -6,19 +6,30 @@ import com.intern.study.board.domain.BoardResponseDto;
 import com.intern.study.board.repository.BoardRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
 @Slf4j
-@Setter
 @RequiredArgsConstructor
 @Service
 public class BoardService {
     private final BoardRepository boardRepository;
 
+    /**
+     * 내부 재사용 용도의 함수
+     */
+    @Transactional
+    public BoardEntity getBoardByUuid(String uuid) {
+
+        return  boardRepository.findByUuid(uuid)
+                .orElseThrow( () -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."));
+    }
+
+    /**
+     * 게시글 작성
+     */
     @Transactional
     public BoardResponseDto writeBoard( BoardRequestDto requestDto) {
 
@@ -29,57 +40,58 @@ public class BoardService {
         BoardEntity savedEntity = boardRepository.save(entity);
 
         //Entity -> ResponseDTO 변환
-        BoardResponseDto responseDto = new BoardResponseDto(savedEntity);
-
-        return responseDto;
+        return  new BoardResponseDto(savedEntity);
     }
 
+    /**
+     * 게시글 조회
+     */
     @Transactional
-    public BoardEntity getBoard(Long id) {
-
-        BoardEntity board = boardRepository.findById(id)
-                .orElseThrow( () -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."));
-
-        return board;
+    public BoardResponseDto getBoard(String uuid) {
+        return new BoardResponseDto(getBoardByUuid(uuid));
     }
 
+    /**
+     * 게시글 리스트 조회
+     */
     @Transactional
     public ArrayList<BoardResponseDto> getBoardList() {
 
         ArrayList<BoardResponseDto> boardList = new ArrayList<>();
 
         boardRepository.findAll()
-                .forEach(board -> {
-                    boardList.add(new BoardResponseDto(board));
-                });
+                       .forEach(board -> {
+                            boardList.add(new BoardResponseDto(board));
+                       });
 
         return boardList;
     }
 
+    /**
+     * 게시글 수정
+     */
     @Transactional
-    public BoardResponseDto updateBoard( BoardRequestDto requestDto) {
+    public BoardResponseDto updateBoard(BoardRequestDto requestDto) {
 
-        //getBoard 호출해 Id에 해당하는 Board 가져오기
-        BoardEntity board = getBoard(requestDto.getId());
+        BoardEntity board = getBoardByUuid(requestDto.getUuid());
 
         //board update
         board.setTitle(requestDto.getTitle());
         board.setContent(requestDto.getContent());
 
-        //JPA 저장
+        //JPA Persistence Context로 생략 가능
         boardRepository.save(board);
 
         return new BoardResponseDto(board);
     }
 
-
+    /**
+     * 게시글 삭제
+     */
     @Transactional
-    public void deleteBoard(Long id) {
+    public void deleteBoard(String uuid) {
 
-        //getBoard 호출해 Id에 해당하는 Board 가져오기
-        BoardEntity board = getBoard(id);
-
-        //JPA 삭제
+        BoardEntity board = getBoardByUuid(uuid);
         boardRepository.delete(board);
     }
 

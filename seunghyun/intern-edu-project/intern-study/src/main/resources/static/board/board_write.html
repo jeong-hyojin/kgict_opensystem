@@ -12,11 +12,6 @@
 <h2>게시글 작성하기</h2>
 <form id="boardForm">
   <div>
-    <label for="UUID">UUID</label>
-    <input type="text" id="UUID" name="UUID" required />
-  </div>
-
-  <div>
     <label for="title">제목</label>
     <input type="text" id="title" name="title" required />
   </div>
@@ -50,17 +45,12 @@
   form.addEventListener("submit", async function (e) {
     e.preventDefault(); // 새로고침 방지
 
-    const UUID 				= document.getElementById("UUID").value.trim();
     const title 			= document.getElementById("title").value.trim();
     const content 			= document.getElementById("content").value.trim();
     const password			= document.getElementById("password").value.trim();
     const passwordConfirm	= document.getElementById("passwordConfirm").value.trim();
 
     // 유효성 검사
-    if (!ValidationUtil.isNotEmpty(UUID)) {
-      AlertUtil.showWarning("UUID를 입력해주세요");
-      return;
-    }
     if (!ValidationUtil.isNotEmpty(title)) {
       AlertUtil.showWarning("제목을 입력해주세요");
       return;
@@ -84,7 +74,6 @@
 
     // ApiUtil POST 요청
     const result = await ApiUtil.post("/api/boards/write", {
-      UUID: UUID,
       title: title,
       content: content,
       password: password,

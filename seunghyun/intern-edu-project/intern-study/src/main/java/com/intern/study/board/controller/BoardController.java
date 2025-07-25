@@ -2,7 +2,6 @@ package com.intern.study.board.controller;
 
 import java.util.ArrayList;
 
-import com.intern.study.board.domain.BoardEntity;
 import com.intern.study.board.domain.BoardRequestDto;
 import com.intern.study.board.domain.BoardResponseDto;
 import com.intern.study.board.service.BoardService;
@@ -19,13 +18,15 @@ public class BoardController {
 
 	private final BoardService boardService;
 
-	// 게시글 작성
+	/**
+	 * 게시글 작성
+	 */
 	@PostMapping("/write")
 	public ApiResponse<?> writeBoard(@RequestBody BoardRequestDto boardRequestDto) {
 
 		try {
 			BoardResponseDto responseDto = boardService.writeBoard(boardRequestDto);
-			return new ApiResponse<>("SUCCESS","게시글 작성 성공", responseDto.getId());
+			return new ApiResponse<>("SUCCESS","게시글 작성 성공", responseDto.getUuid());
 
 		} catch (Exception e) {
 			log.error("회원가입 오류", e);
@@ -33,13 +34,14 @@ public class BoardController {
 		}
 	}
 
-	//게시글 상세 조회
-	@GetMapping("/{id}")
-	public ApiResponse<?> getBoard(@PathVariable String id) {
+	/**
+	 * 게시글 조회
+	 */
+	@GetMapping("/{uuid}")
+	public ApiResponse<?> getBoard(@PathVariable String uuid) {
 
 		try{
-			BoardEntity board = boardService.getBoard(Long.parseLong(id));
-			BoardResponseDto responseDto = new BoardResponseDto(board);
+			BoardResponseDto responseDto = boardService.getBoard(uuid);
 			return new ApiResponse<>("SUCCESS","조회 성공", responseDto);
 
 		} catch(IllegalArgumentException e ){
@@ -51,7 +53,9 @@ public class BoardController {
 		}
 	}
 
-	//게시글 리스트 불러오기
+	/**
+	 * 게시글 리스트 조회
+	 */
 	@GetMapping("board-list")
 	public ApiResponse<?> showBoardList() {
 
@@ -67,7 +71,9 @@ public class BoardController {
 	}
 
 
-	//게시글 수정
+	/**
+	 * 게시글 수정
+	 */
 	@PutMapping("/update")
 	public ApiResponse<?> updateBoard(@RequestBody BoardRequestDto boardRequestDto) {
 
@@ -85,12 +91,14 @@ public class BoardController {
 	}
 
 
-	//게시글 삭제
-	@DeleteMapping("/delete/{id}")
-	public ApiResponse<?> deleteBoard( @PathVariable String id) {
+	/**
+	 * 게시글 삭제
+	 */
+	@DeleteMapping("/delete/{uuid}")
+	public ApiResponse<?> deleteBoard( @PathVariable String uuid) {
 
 		try{
-			boardService.deleteBoard(Long.parseLong(id));
+			boardService.deleteBoard(uuid);
 			return new ApiResponse<>("SUCCESS","게시글 삭제 성공", null);
 
 		}catch (Exception e) {
