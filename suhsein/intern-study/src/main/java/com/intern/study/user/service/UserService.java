@@ -1,6 +1,6 @@
 package com.intern.study.user.service;
 
-import com.intern.study.common.ApiResponse;
+import com.intern.study.admin.dto.UserPasswordUpdateRequestDto;
 import com.intern.study.user.domain.UserEntity;
 import com.intern.study.user.dto.UserLoginResponseDto;
 import com.intern.study.user.dto.UserSignupRequestDto;
@@ -12,8 +12,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -43,5 +41,14 @@ public class UserService {
     public UserEntity userDetail(String userId) {
         return userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+    }
+
+    public String updatePassword(UserPasswordUpdateRequestDto requestDto) {
+        UserEntity user = userRepository.findByUserId(requestDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
+        user.changePassword(passwordEncoder, requestDto);
+        UserEntity saved = userRepository.save(user);
+
+        return saved.getUserId();
     }
 }

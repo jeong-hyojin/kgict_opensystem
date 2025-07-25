@@ -2,11 +2,10 @@ package com.intern.study.user.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
+import com.intern.study.admin.dto.UserPasswordUpdateRequestDto;
 import com.intern.study.user.dto.UserDetailResponseDto;
 import com.intern.study.user.service.UserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.intern.study.common.ApiResponse;
@@ -14,7 +13,6 @@ import com.intern.study.user.domain.UserEntity;
 import com.intern.study.user.dto.UserLoginRequestDto;
 import com.intern.study.user.dto.UserLoginResponseDto;
 import com.intern.study.user.dto.UserSignupRequestDto;
-import com.intern.study.user.repository.UserRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -143,6 +141,17 @@ public class UserController {
 			return new ApiResponse<>("SUCCESS", "조회 성공", UserDetailResponseDto.from(user));
 		} catch(Exception e) {
 			log.error("사용자 조회 중 예외 발생", e);
+			return new ApiResponse<>("FAIL", e.getMessage(), null);
+		}
+	}
+
+	// 임시 사용자 비밀번호 변경
+	@PutMapping("/user-password-update")
+	public ApiResponse<?> updatePassword(@RequestBody UserPasswordUpdateRequestDto requestDto) {
+		try {
+			String userId = userService.updatePassword(requestDto);
+			return new ApiResponse<>("SUCCESS", "사용자 비밀번호 변경에 성공했습니다. 재로그인 해주세요.", userId);
+		} catch (Exception e) {
 			return new ApiResponse<>("FAIL", e.getMessage(), null);
 		}
 	}

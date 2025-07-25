@@ -27,8 +27,10 @@ function showWarning(message) {
  * 에러 알림
  * @param {string} message 표시할 메시지
  */
-function showError(message) {
-  Swal.fire("오류", message, "error");
+async function showError(message) {
+  const result = await Swal.fire("오류", message, "error");
+
+  return result.isConfirmed;
 }
 
 /**

@@ -81,7 +81,7 @@ async function del(url, params = {}) {
 
 /**
  *  공통 응답 처리
- * - 성공 시 메시지 잇으면 showSuccess()
+ * - 성공 시 메시지 있으면 showSuccess()
  * - 실패 시 showError() 후 예외 throw
  */
 async function handleApiResponse(response) {
