@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 - 게시글 목록</title>
+</head>
+<body class="p-4">
+
+    <div class="mb-3 text-right">
+        <button class="btn btn-outline-danger float-right" onclick="logout()">로그아웃</button>
+    </div>
+    <h2 class="mb-4">게시글 목록</h2>
+    <div class="mb-3 text-right">
+        <button class="btn btn-primary" id ="addBoard" onclick="addBoardModal()"> + 게시글 추가</button>
+    </div>
+
+    <table  id="boardTable"
+            class="table table-bordered table-hover"
+            data-toggle="table"
+            data-search="true"
+            data-pagination="true"
+            data-page-size="5">
+        <thead>
+        <tr>
+            <th data-formatter="rowIndexFormatter">No.</th>
+            <th data-field="title" data-sortable="true" data-formatter="uuidFormatter">제목</th>
+            <th data-field="updatedAt" data-sortable="true">수정일</th>
+        </tr>
+        </thead>
+    </table>
+
+</body>
+<script src = "/js/common.js"></script>
+<script>
+
+    // 로그아웃 처리: 로컬 스토리지 제거
+    function logout() {
+        localStorage.clear();
+        location.href = "/login.html";
+    }
+
+    // 게시글 추가
+    function addBoardModal() {
+        location.href = "board_write.html";
+    }
+
+    // Bootstrap 순번 포매터 (index 0부터 시작)
+    function rowIndexFormatter(value, row, index) {
+        return index + 1;
+    }
+
+    // 게시글 제목 클릭 시, 상세 페이지 이동
+    // board_detail.html에서 JS가 uuid를 읽어와서, board_detail.html에서 /api/boards/{uuid} 호출
+    function uuidFormatter(value, row) {
+        return `<a href="/board/board_detail.html?uuid=${encodeURIComponent(row.uuid)}" class="text-primary">${row.title}</a>`;
+    }
+
+    // 게시글 테이블 로딩
+    async function loadBoardTable() {
+        const boards = await ApiUtil.get("/api/boards/board-list");
+        console.log(boards);
+        if (boards) {
+            $('#boardTable').bootstrapTable('load', boards);
+        }
+    }
+
+    //초기 로딩
+    document.addEventListener("DOMContentLoaded", function (){
+        //ApiUtil 로드 기다리기
+        setTimeout(loadBoardTable,100);
+    });
+
+</script>
+
+</html>

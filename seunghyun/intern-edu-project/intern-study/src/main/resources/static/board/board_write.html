@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8">
+  <title>게시글 쓰기</title>
+  <link rel="stylesheet" href="/css/board.css">
+</head>
+
+<body>
+<h2>게시글 작성하기</h2>
+<form id="boardForm">
+  <div>
+    <label for="title">제목</label>
+    <input type="text" id="title" name="title" required />
+  </div>
+
+  <div>
+    <label for="content">내용</label>
+    <input type="text" id="content" name="content" required />
+  </div>
+
+  <div>
+    <label for="password">비밀번호</label>
+    <input type="password" id="password" name="password" />
+  </div>
+
+  <div>
+    <label for="passwordConfirm">비밀번호 확인</label>
+    <input type="password" id="passwordConfirm" name="passwordConfirm" minlength="8" maxlength="20" />
+    <span id="passwordMsg" style="color: red;"></span>
+  </div>
+
+  <button type="submit">제출하기</button>
+</form>
+</body>
+<script src="/js/common.js"></script>
+<script>
+  const form 		= document.getElementById("boardForm");
+  const passwordMsg = document.getElementById("passwordMsg");
+
+  passwordMsg.style.display = "none";
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault(); // 새로고침 방지
+
+    const title 			= document.getElementById("title").value.trim();
+    const content 			= document.getElementById("content").value.trim();
+    const password			= document.getElementById("password").value.trim();
+    const passwordConfirm	= document.getElementById("passwordConfirm").value.trim();
+
+    // 유효성 검사
+    if (!ValidationUtil.isNotEmpty(title)) {
+      AlertUtil.showWarning("제목을 입력해주세요");
+      return;
+    }
+    if (!ValidationUtil.isNotEmpty(content)) {
+      AlertUtil.showWarning("내용을 입력해주세요");
+      return;
+    }
+    if (!ValidationUtil.isNotEmpty(password)) {
+      AlertUtil.showWarning("비밀번호를 입력해주세요");
+      return;
+    }
+    if (!ValidationUtil.isValidPasswordLength(password, 8, 20)) {
+      AlertUtil.showWarning("비밀번호는 8자 이상 20자 이하로 입력해주세요");
+      return;
+    }
+    if (!ValidationUtil.isPasswordMatch(password, passwordConfirm)) {
+      AlertUtil.showError("비밀번호와 비밀번호 확인이 일치하지 않습니다");
+      return;
+    }
+
+    // ApiUtil POST 요청
+    const result = await ApiUtil.post("/api/boards/write", {
+      title: title,
+      content: content,
+      password: password,
+    });
+
+    location.href = "board_list.html";
+
+  });
+</script>
+</html>

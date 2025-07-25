@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 상세</title>
+</head>
+<body class="container p-4">
+  <h2>게시글 상세</h2>
+  <div class="mb-3">
+    <label class="form-label">제목</label>
+    <input type="text" class="form-control" id="title" readonly>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">내용</label>
+    <textarea class="form-control" id="content" rows="6" readonly></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">작성일</label>
+    <input type="text" class="form-control" id="createdAt" readonly>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">수정일</label>
+    <input type="text" class="form-control" id="updatedAt" readonly>
+  </div>
+
+  <div class="mt-4">
+    <button class="btn btn-secondary" onclick="goBack()">돌아가기</button>
+    <button class="btn btn-primary" onclick="goUpdate()">수정하기</button>
+    <button class="btn btn-danger" onclick="goDelete()">삭제하기</button>
+  </div>
+
+</body>
+
+<script src="/js/common.js"></script>
+<script>
+
+  let uuid = "";
+
+  // 뒤로 가기
+  function goBack() {
+    history.back();
+  }
+
+  //게시글 수정 페이지 이동
+  function goUpdate(){
+    //const uuid = new URLSearchParams(location.search).get("uuid");
+    location.href = `board_update.html?uuid=${uuid}`;
+  }
+
+  //게시글 삭제하기
+  async function goDelete(){
+    //const uuid = new URLSearchParams(location.search).get("uuid");
+
+    if (!uuid) return showError("잘못된 접근입니다.");
+
+    // ApiUtil.del 요청 (PathVariable 방식)
+    const result = await ApiUtil.del(`/api/boards/delete/${uuid}`);
+
+    // ApiUtil.del 요청 (RequestParam 방식)
+    //const result = await ApiUtil.del("/api/boards/delete", { params: { id: id } });
+
+    location.href = "board_list.html";
+  }
+
+  // 게시글 상세 조회
+  async function loadBoardInfo() {
+    uuid = new URLSearchParams(location.search).get("uuid");
+
+    if (!uuid) return showError("잘못된 접근입니다.");
+
+    const board = await ApiUtil.get(`/api/boards/${uuid}`);
+    //console.log(board)
+    if (!board) return; // ApiUtil 내부에서 showError 처리됨
+
+    document.getElementById("title").value = board.title;
+    document.getElementById("content").value = board.content;
+    document.getElementById("createdAt").value = new Date(board.createdAt).toLocaleString();
+    document.getElementById("updatedAt").value = new Date(board.updatedAt).toLocaleString();
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // common.js 호출 이후 실행되도록
+    setTimeout(loadBoardInfo, 100);
+  });
+
+</script>
+</html>

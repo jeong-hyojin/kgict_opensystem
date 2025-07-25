@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>관리자용_사용자 수정</title>
+  <link rel="stylesheet" href="/css/user_detail.css">
+</head>
+<body>
+<h2>사용자 정보 수정</h2>
+<form id="updateUserForm">
+  <div>
+    <label for="userId">사용자 ID</label>
+    <input type="text" id="userId" name="userId" required readonly/>
+  </div>
+  <div>
+    <label for="password">비밀번호</label>
+    <input type="password" id="password" name="password" required />
+  </div>
+  <div>
+    <label for="username">이름</label>
+    <input type="text" id="username" name="username" required />
+  </div>
+  <div>
+    <label for="email">이메일</label>
+    <input type="text" id="email" name="email" required />
+  </div>
+  <div>
+    <label for="phone">전화번호</label>
+    <input type="text" id="phone" name="phone" required />
+  </div>
+  <div>
+    <label for="role">권한(ROLE)</label>
+    <select id="role" name="role" required>
+      <option value="USER">USER</option>
+      <option value="ADMIN">ADMIN</option>
+      <option value="TEMP">TEMP</option>
+    </select>
+  </div>
+  <div>
+    <label>사용여부</label>
+    <label><input type="radio" name="isActive" value="true" required> 사용</label>
+    <label><input type="radio" name="isActive" value="false"> 미사용</label>
+  </div>
+  <button type="submit">수정 제출</button>
+</form>
+</body>
+
+<script src="/js/common.js"></script>
+<script>
+  const form = document.getElementById('updateUserForm');
+  const params = new URLSearchParams(window.location.search);
+  const userId = params.get('userId');
+
+  //사용자 정보 불러오기
+  async function loadUser(){
+
+    if (!userId) {
+      location.href = "user_list.html";
+    }
+
+    const user = await ApiUtil.get(`/api/admin/${userId}`);
+    if (user) {
+      fillForm(user);
+    }
+
+  }
+
+  // form 채우기 함수
+  function fillForm(user) {
+    document.getElementById('userId').value = user.userId;
+    document.getElementById('username').value = user.username;
+    document.getElementById('email').value = user.email;
+    document.getElementById('phone').value = user.phone;
+    document.getElementById('role').value = user.role;
+    document.querySelector(`input[name="isActive"][value="${user.isActive ? 'true' : 'false'}"]`).checked = true;
+  }
+
+  // 사용자 수정 이벤트
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const userId = document.getElementById('userId').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const role = document.getElementById('role').value;
+    const isActive = document.querySelector('input[name="isActive"]:checked').value === 'true';
+
+    // 유효성 검사
+    if (!ValidationUtil.isNotEmpty(password)) {
+      AlertUtil.showWarning("비밀번호를 입력해주세요");
+      return;
+    }
+    if (!ValidationUtil.isNotEmpty(username)) {
+      AlertUtil.showWarning("이름을 입력해주세요");
+      return;
+    }
+    if (!ValidationUtil.isValidEmail(email)) {
+      AlertUtil.showWarning("올바른 이메일을 입력해주세요");
+      return;
+    }
+
+    const data = {
+      userId, password, username, email, phone, role, isActive
+    };
+
+    const result = await ApiUtil.put(`/api/admin/update`, data);
+
+    location.href = "user_list.html";
+  });
+
+  // 초기 로딩 시 사용자 정보 불러오기
+  document.addEventListener('DOMContentLoaded', () => {
+    // common.js 호출 이후 실행되도록
+    setTimeout(loadUser, 100);
+  });
+
+</script>
+</html>
