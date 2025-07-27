@@ -17,11 +17,12 @@ public class UserDetailResponseDto {
     Boolean isActive; // 사용여부
 
     public static UserDetailResponseDto from(UserEntity user) {
-        return new UserDetailResponseDto( user.getUserId(),
-                                          user.getUsername(),
-                                          user.getEmail(),
-                                          user.getRole(),
-                                          user.getIsActive()
-                                         );
+        return new UserDetailResponseDto(
+              user.getUserId(),
+              user.getUsername(),
+              user.getEmail(),
+              user.getRole(),
+              user.getIsActive()
+             );
     }
 }

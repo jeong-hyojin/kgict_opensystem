@@ -47,7 +47,15 @@
         $content.textContent      = boardPost.content;
         $content.style.whiteSpace = "pre-line";
 
-        $boardInfo.append($title, $hr, $content);
+        // 등록일, 수정일, 삭제여부
+        const $createdAt = document.createElement("div");
+        $createdAt.textContent = `등록일: ${boardPost.createdAt || ''}`;
+        $createdAt.style.marginBottom = "5px";
+        const $updatedAt = document.createElement("div");
+        $updatedAt.textContent = `수정일: ${boardPost.updatedAt || ''}`;
+        $updatedAt.style.marginBottom = "5px";
+       
+        $boardInfo.append($title, $createdAt, $updatedAt, $hr, $content);
 
         // 버튼 이벤트 추가
         const $backButton   = document.querySelector("#backButton");

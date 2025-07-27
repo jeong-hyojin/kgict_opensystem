@@ -28,7 +28,10 @@ public class BoardService {
 
 	// 전체 게시판 목록 읽기
 	public List<BoardResponseDto> getBoardList() {
-		List<Board> boardList = boardRepository.findAll();
+		List<Board> boardList = boardRepository.findAll()
+								.stream()
+								.filter(b -> !b.isDeleted())
+								.toList();
 		return  boardList
 				.stream().map(BoardResponseDto::from)
 				.toList();
@@ -37,8 +40,10 @@ public class BoardService {
 	// 게시물 상세 조회
 	public Board getBoardPost(String postId) {
 		Board retrieved = boardRepository.findById(postId)
-				.orElseThrow(() -> new IllegalArgumentException("게시물 번호 " + postId + " 게시물이 존재하지 않습니다."));
-
+							.orElseThrow(() -> new IllegalArgumentException("게시물 번호 " + postId + " 게시물이 존재하지 않습니다."));
+		if (retrieved.isDeleted()) {
+			throw new IllegalArgumentException("삭제된 게시물입니다.");
+		}
 		return retrieved;
 	}
 
@@ -75,11 +80,13 @@ public class BoardService {
 	// 게시물 삭제
 	public boolean deleteBoard(String id) {
 		// 게시물 존재 여부 확인
-		if(!boardRepository.existsById(id)) {
+		Optional<Board> boardOpt = boardRepository.findById(id);
+		if(boardOpt.isEmpty() || boardOpt.get().isDeleted()) {
 			return false;
 		}
-		// 게시물 삭제
-		boardRepository.deleteById(id);
+		Board board = boardOpt.get();
+		board.delete(); // soft delete
+		boardRepository.save(board);
 		return true;
 	}
 }
