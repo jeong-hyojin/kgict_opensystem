@@ -20,6 +20,11 @@ public class SecurityConfig {
       http
       .csrf().disable()
       .authorizeHttpRequests()
+              .requestMatchers(
+                      "/h2-console/**",
+                      "/swagger-ui/**",
+                      "swagger-ui.html/**",
+                      "/v3/api-docs/**").permitAll()
         .anyRequest().permitAll()
       .and()
       .formLogin().disable()

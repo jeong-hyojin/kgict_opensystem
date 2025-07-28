@@ -3,40 +3,42 @@
 <head>
   <meta charset="UTF-8"/>
   <title>회원가입</title>
+  <link rel="stylesheet" href="/css/signup.css">
 </head>
 
 <body>
-  <h2>회원가입</h2>
+  <div class="signup-container">
+    <form id="signupForm">
+      <h2>회원가입</h2>
 
-  <form id="signupForm">
+      <div>
+        <label for="userId">아이디</label>
+        <input type="text" id="userId" name="userId" required/>
+      </div>
 
-    <div>
-      <label for="userId">아이디</label><br/>
-      <input type="text" id="userId" name="userId" required/>
-    </div>
+      <div>
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password" minlength="8" maxlength="12"/>
+      </div>
 
-    <div>
-      <label for="password">비밀번호</label><br/>
-      <input type="password" id="password" name="password" minlength="8" maxlength="12"/>
-    </div>
+      <div>
+        <label for="password">비밀번호확인</label>
+        <input type="password" id="passwordConfirm" name="password" minlength="8" maxlength="12"/>
+      </div>
 
-    <div>
-      <label for="password">비밀번호확인</label><br/>
-      <input type="password" id="passwordConfirm" name="password" minlength="8" maxlength="12"/>
-    </div>
+      <div>
+        <label for="username">사용자 이름</label>
+        <input type="text" id="username" name="username" required/>
+      </div>
 
-    <div>
-      <label for="username">사용자 이름</label><br/>
-      <input type="text" id="username" name="username" required/>
-    </div>
+      <div>
+        <label for="email">이메일</label>
+        <input type="email" id="email" name="email"/>
+      </div>
 
-    <div>
-      <label for="email">이메일</label><br/>
-      <input type="email" id="email" name="email"/>
-    </div>
-
-    <button type="submit">가입하기</button>
-  </form>
+      <button type="submit">가입하기</button>
+    </form>
+  </div>
 </body>
 <script src="/js/common.js"></script>
 <script>
@@ -63,7 +65,7 @@
 	   AlertUtil.showWarning("아이디를 입력해주세요");
 	   return;
 	 }
-	 if (!ValidationUtil.isLowerCaseOnly(username)) {
+	 if (!ValidationUtil.isLowerCaseOnly(userId)) {
 	   AlertUtil.showWarning("아이디는 소문자만 입력 가능합니다");
 	   return;
 	 }
@@ -90,7 +92,7 @@
 	   return;
 	 }
 		
-   	 const result = await ApiUtil.post('/user/signup-post-jpa', {
+   	 const result = await ApiUtil.post('/api/user/signup-post-jpa', {
         userId,
         username,
         email,

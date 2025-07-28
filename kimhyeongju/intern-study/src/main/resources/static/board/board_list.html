@@ -1,11 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>게시글 목록</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/board_list.css">
 </head>
-<body>
-    
+<body class="p-4">
+    <div class="board-header d-flex justify-content-between align-items-start mb-4">
+        <h2 class="board-title mb-0 refreshable-title" onclick="location.reload()">
+            <i class="fas fa-list-ul"></i> 게시글 목록
+        </h2>
+        <div class="user-info d-flex align-items-center gap-2">
+            <div class="user-greeting-wrapper">
+                <div class="greeting-top">
+                    <img src="/img/default-profile.png" class="profile-img" alt="프로필">
+                    <span class="greeting-text">안녕하세요 👋, <strong id="username">김형주</strong>님</span>
+                </div>
+                <div class="greeting-buttons">
+                    <button class="info-btn" onclick="location.href='/user/user_detail.html'">
+                        <i class="fas fa-id-card"></i> 내 정보
+                    </button>
+                    <button id="logoutBtn" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> 로그아웃
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center mb-3">
+        <div class="input-group search-group" style="max-width: 500px;">
+            <input type="text" id="searchInput" class="form-control" placeholder=" 검색어">
+            <div class="input-group-append">
+                <button id="searchButton" class="btn search-btn">
+                    <i class="fas fa-search"></i> 검색
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3 text-right">
+        <button id="boardAdd" onclick="location.href='/board/board_create.html'">
+            <i class="fas fa-plus-circle"></i> 게시글 추가
+        </button>
+    </div>
+
+    <table id="boardTable"
+           class="table table-bordered table-hover"
+           data-toggle="table"
+           data-side-pagination="server"
+           data-pagination="true"
+           data-page-size="10"
+           data-url="/v1/board"
+           data-query-params="queryParams"
+           data-response-handler="responseHandler"
+           data-pagination-h-align="center"
+           data-show-pagination-info="false">
+        <thead>
+            <tr>
+                <th data-formatter="indexFormatter"                                                            data-width="1">번호</th>
+                <th data-field="title"            data-formatter="titleFormatter" data-width="200">제목</th>
+                <th data-field="username"                                         data-width="15">작성자</th>
+                <th data-field="createAt"         data-formatter="dateFormatter"  data-width="20">작성일</th>
+            </tr>
+        </thead>
+    </table>
 </body>
+<script src="/js/common.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+            window.location.href = "/login.html";
+            return;
+        }
+
+        // 사용자 이름 세팅
+        const username = localStorage.getItem("username") || "사용자";
+        document.getElementById("username").textContent = username;
+
+        // 로그아웃 버튼 이벤트
+        document.getElementById("logoutBtn")?.addEventListener("click", function () {
+            localStorage.clear();
+            location.href = "/login.html";
+        });
+
+        // 검색 버튼 이벤트
+        document.getElementById("searchButton")?.addEventListener("click", function () {
+            $('#boardTable').bootstrapTable('refresh');
+        });
+    });
+
+    function queryParams(params) {
+        return {
+            ...params,
+            page: params.offset / params.limit,
+            query: $('#searchInput').val()
+        };
+    }
+
+    function responseHandler(res) {
+        return {
+            total: res.data.totalElements,
+            rows: res.data.content
+        };
+    }
+
+    function titleFormatter(value, row) {
+        return `<a href="/board/board_detail.html?id=${encodeURIComponent(row.boardId)}" class="text-primary">${value}</a>`;
+    }
+
+    function dateFormatter(value) {
+        return new Date(value).toLocaleDateString();
+    }
+
+    function indexFormatter(value, row, index) {
+        const { pageNumber, pageSize } = $('#boardTable').bootstrapTable('getOptions');
+        return (pageNumber - 1) * pageSize + index + 1;
+    }
+</script>
+
 </html>
