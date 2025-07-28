@@ -6,6 +6,8 @@ import com.intern.study.board.domain.BoardRequestDto;
 import com.intern.study.board.domain.BoardResponseDto;
 import com.intern.study.board.service.BoardService;
 import com.intern.study.common.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -13,15 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "게시판")
 @RequestMapping("/api/boards")
 public class BoardController {
 
 	private final BoardService boardService;
 
-	/**
-	 * 게시글 작성
-	 */
 	@PostMapping("/write")
+	@Operation(summary = "게시글 작성")
 	public ApiResponse<?> writeBoard(@RequestBody BoardRequestDto boardRequestDto) {
 
 		try {
@@ -34,10 +35,9 @@ public class BoardController {
 		}
 	}
 
-	/**
-	 * 게시글 조회
-	 */
+
 	@GetMapping("/{uuid}")
+	@Operation(summary = "게시글 조회")
 	public ApiResponse<?> getBoard(@PathVariable String uuid) {
 
 		try{
@@ -53,10 +53,9 @@ public class BoardController {
 		}
 	}
 
-	/**
-	 * 게시글 리스트 조회
-	 */
+
 	@GetMapping("board-list")
+	@Operation(summary = "게시글 목록 조회")
 	public ApiResponse<?> showBoardList() {
 
 		try {
@@ -71,10 +70,9 @@ public class BoardController {
 	}
 
 
-	/**
-	 * 게시글 수정
-	 */
+
 	@PutMapping("/update")
+	@Operation(summary = "게시글 수정")
 	public ApiResponse<?> updateBoard(@RequestBody BoardRequestDto boardRequestDto) {
 
 		try{
@@ -91,10 +89,8 @@ public class BoardController {
 	}
 
 
-	/**
-	 * 게시글 삭제
-	 */
 	@DeleteMapping("/delete/{uuid}")
+	@Operation(summary = "게시글 삭제")
 	public ApiResponse<?> deleteBoard( @PathVariable String uuid) {
 
 		try{

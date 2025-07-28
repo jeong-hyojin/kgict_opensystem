@@ -20,7 +20,10 @@ public class SecurityConfig {
 		http.csrf(csrf -> csrf.disable())
 			.headers(headers -> headers.frameOptions().disable()) // ✅ H2 콘솔 iframe 허용
 			.authorizeHttpRequests(auth -> auth
-			.requestMatchers("/h2-console/**").permitAll() // ✅ 허용 경로 추가
+			.requestMatchers("/h2-console/**"
+								,"/swagger-ui/**"
+								,"/swagger-ui.html"
+								,"/v3/api-docs/**").permitAll() // ✅ 허용 경로 추가
 	        .anyRequest().permitAll()
 		);
 	  	return http.build();

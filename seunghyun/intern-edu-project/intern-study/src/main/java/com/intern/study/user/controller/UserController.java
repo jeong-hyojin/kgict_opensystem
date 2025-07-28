@@ -7,21 +7,27 @@ import com.intern.study.common.ApiResponse;
 import com.intern.study.user.domain.*;
 
 import com.intern.study.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "사용자")
+@Validated
 @RequestMapping("/api/user")
 public class UserController {
 
 	private final UserService userService;
 
     @GetMapping("/signup-url")
+	@Operation(summary = "[Test] 가입 요청 확인")
     public String signupUrl(@RequestParam String username,
                             @RequestParam String email,
                             @RequestParam String password) {
@@ -29,9 +35,10 @@ public class UserController {
         return "가입 요청 확인 : username=" + username + ", email=" + email;
  
     }
-    
-    
+
+
     @GetMapping("/signup-fetch")
+	@Operation(summary = "[Test] 회원가입 Fetch")
     public Map<String, Object> signupFetch(	@RequestParam String username,
                             				@RequestParam String email,
                             				@RequestParam String password) {
@@ -54,6 +61,7 @@ public class UserController {
     
     
     @PostMapping("/signup-post-map")
+	@Operation(summary = "[Test] 회원가입 Map 사용")
     public Map<String, Object> signupPost(@RequestBody Map<String, String> params){
     	
     	
@@ -83,6 +91,7 @@ public class UserController {
     }
     
     @PostMapping("/signup-post-dto")
+	@Operation(summary = "[Test] 회원가입 로직만 구현")
     public ApiResponse<?> signup(@RequestBody UserSignupRequestDto resquestDto){
     	
     	//클라이언트에서 받은 json ->dto 자동 매핑
@@ -109,6 +118,7 @@ public class UserController {
 
 /* 리팩토링 후, Controller-Service-Repository 분리 */
     @PostMapping("/signup-post-jpa")
+	@Operation(summary = "회원가입")
     public ApiResponse<?> signupRequest(@RequestBody UserSignupRequestDto resquestDto){
 
 		try {
@@ -123,6 +133,7 @@ public class UserController {
     
     
     @PostMapping("/login")
+	@Operation(summary = "로그인")
     public ApiResponse<?> login(@RequestBody UserLoginRequestDto requestDto){
 
 		try {
@@ -140,6 +151,7 @@ public class UserController {
 
 
 	@GetMapping("/{userId}")
+	@Operation(summary = "사용자 조회")
 	public ApiResponse<?> userDetail(@PathVariable String userId){
 		try{
 			UserResponseDto response = userService.getUserDto(userId);

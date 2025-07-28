@@ -7,6 +7,8 @@ import com.intern.study.user.domain.UserEntity;
 import com.intern.study.user.domain.UserResponseDto;
 import com.intern.study.user.repository.UserRepository;
 import com.intern.study.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,23 +19,24 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "관리자")
 @RequestMapping("/api/admin")
 public class AdminController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
-    //사용자 전체 조회
     // userRepository.findAll() 도 dto로 변결할 예정(Service 단)
     @GetMapping("/user-list")
+    @Operation(summary = "사용자 전체 조회")
     public ApiResponse<?> userList(){
 
         log.info("사용자 전체 조회 userList()");
         return new ApiResponse<>("SUCCESS", "전체 사용자 목록", userRepository.findAll());
     }
 
-    //사용자 상세 정보
     @GetMapping("/{userId}")
+    @Operation(summary = "사용자 상세 조회")
     public ApiResponse<?> userDetail(@PathVariable String userId){
 
         log.info(userId);
@@ -56,8 +59,8 @@ public class AdminController {
         }
     }
 
-    //사용자 삭제
     @DeleteMapping("/user-delete/{userId}")
+    @Operation(summary = "사용자 삭제")
     public ApiResponse<?> userDelete(@PathVariable String userId){
 
         try{
@@ -86,8 +89,9 @@ public class AdminController {
         }
     }
 
-    //사용자 추가
+
     @PostMapping("user-add")
+    @Operation(summary = "사용자 추가")
     public ApiResponse<?> signupRequest(@RequestBody AdminUserAddRequestDto requestDto){
 
         try{
@@ -104,8 +108,9 @@ public class AdminController {
         }
     }
 
-    //사용자 수정
+
     @PutMapping("/update")
+    @Operation(summary = "사용자 수정")
     public ApiResponse<?> updateUser(@RequestBody AdminUpdateRequestDto requestDto){
 
         try{
