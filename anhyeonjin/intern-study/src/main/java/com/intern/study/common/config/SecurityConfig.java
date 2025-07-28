@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity // ✅ 필수
+@EnableWebSecurity
 public class SecurityConfig {
 
 	@Bean
@@ -23,9 +23,10 @@ public class SecurityConfig {
 				.csrf(csrf -> csrf.disable())
 				.headers(headers -> headers.frameOptions(frame -> frame.disable())) // H2 콘솔 iframe 허용
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/h2-console/**").permitAll() // H2 콘솔 허용
-						.anyRequest().permitAll() // 나머지 요청도 허용
-				);
+						.requestMatchers(
+								"/h2-console/**", "/swagger-ui/**", "/swagger-ui.html/**", "v3/api-docs/**")
+						.permitAll()
+						.anyRequest().permitAll());
 
 		return http.build();
 	}

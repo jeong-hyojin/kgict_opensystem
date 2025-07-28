@@ -53,4 +53,3 @@ public class BoardEntity {
         updatedAt = LocalDateTime.now();
     }
 }
-
