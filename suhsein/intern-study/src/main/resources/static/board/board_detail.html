@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <title>게시물 상세보기</title>
+</head>
+
+<body class="container py-4">
+<h4 class="mb-4">게시물 상세보기</h4>
+
+<div id="boardInfo" class="border p-3 bg-success text-white" style="display: none"></div>
+
+<div class="mt-3">
+    <button id="backButton"   class="btn btn-secondary">돌아가기</button>
+    <button id="modifyButton" class="btn btn-outline-warning">수정하기</button>
+    <button id="deleteButton" class="btn btn-outline-danger">삭제하기</button>
+</div>
+</body>
+<script src="/js/common.js"></script>
+<script>
+    // 뒤로가기
+    function goBack() {
+        history.back();
+    }
+
+    // 사용자 정보 조회
+    async function loadUserInfo() {
+        // 아이디, 데이터
+        const postId    = new URLSearchParams(location.search).get("postId");
+        const boardPost = await ApiUtil.get(`/api/board/${postId}`);
+
+        if(!boardPost) return; // ApiUtil 내부에서 showError 처리
+
+        // ui append
+        const $boardInfo =  document.getElementById("boardInfo");
+        $boardInfo.style.display = "block";
+
+        // 제목
+        const $title     = document.createElement("h2");
+        $title.textContent        = boardPost.title;
+
+        // 구분선
+        const $hr        = document.createElement("hr");
+
+        // 내용
+        const $content   = document.createElement("div");
+        $content.textContent      = boardPost.content;
+        $content.style.whiteSpace = "pre-line";
+
+        // 등록일, 수정일, 삭제여부
+        const $createdAt = document.createElement("div");
+        $createdAt.textContent = `등록일: ${boardPost.createdAt || ''}`;
+        $createdAt.style.marginBottom = "5px";
+        const $updatedAt = document.createElement("div");
+        $updatedAt.textContent = `수정일: ${boardPost.updatedAt || ''}`;
+        $updatedAt.style.marginBottom = "5px";
+       
+        $boardInfo.append($title, $createdAt, $updatedAt, $hr, $content);
+
+        // 버튼 이벤트 추가
+        const $backButton   = document.querySelector("#backButton");
+        const $modifyButton = document.querySelector("#modifyButton");
+        const $deleteButton = document.querySelector("#deleteButton");
+
+        $backButton.addEventListener("click", goBack);
+        $modifyButton.addEventListener("click", () => {
+            location.href=`board_update.html?postId=${postId}`
+        });
+        $deleteButton.addEventListener("click", async () => {
+            const confirmed = await AlertUtil.showConfirm("정말로 삭제하겠습니까?");
+            if (!confirmed) return;
+
+            ApiUtil.del(`/api/board/${postId}`)
+                .then(data => {
+                    console.log(data);
+                    location.href="board_list.html";
+                })
+                .catch(() => {
+                    console.log("API 호출 실패");
+                });
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // common.js 호출 이후 실행되도록
+        setTimeout(loadUserInfo, 100);
+    });
+</script>
