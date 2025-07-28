@@ -87,7 +87,7 @@ public class AdminController {
     ) {
         try {
             request.encodeTempPassword(passwordEncoder);
-
+            
             UserEntity entity = request.toEntity();
 
             UserEntity saveEntity = userRepository.save(entity);

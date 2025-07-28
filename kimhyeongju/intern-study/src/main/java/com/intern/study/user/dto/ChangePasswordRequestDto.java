@@ -14,3 +14,4 @@ public class ChangePasswordRequestDto {
         this.newPassword = encoder.encode(this.newPassword);
     }
 }
+
