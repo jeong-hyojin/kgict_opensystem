@@ -1,0 +1,66 @@
+body {
+    background: #f5f6fa;
+    min-height: 100vh;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Noto Sans KR', sans-serif;
+
+    /* 중앙 정렬 추가 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.login-wrapper {
+    width: 500px;
+    height : 300px;
+    background: #fff;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    position: relative;
+}
+
+h2 {
+    color: #222;
+    min-width: 100px;
+    text-align: center;
+}
+
+#loginForm {
+    display: flex;
+    flex-direction: column;
+    min-width: 400px;
+
+}
+
+#loginForm input {
+    margin-bottom: 16px;
+    padding: 12px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+#loginForm input:focus {
+    border: 1.5px solid #4f8cff;
+}
+
+#loginForm button {
+    background: #4f8cff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+
+#loginForm button:hover {
+    background: #2563eb;
+}
