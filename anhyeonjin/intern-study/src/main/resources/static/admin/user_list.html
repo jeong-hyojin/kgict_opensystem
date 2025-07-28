@@ -6,31 +6,199 @@
     <title>사용자 목록</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-purple: #6A5ACD; 
+            --bs-body-bg: #FFFFFF; /* Clean white background */
+            --bs-primary: var(--main-purple);
+            --bs-primary-rgb: 106, 90, 205;
+            --bs-border-color: #e9ecef;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--bs-body-bg);
+        }
+
+        .navbar {
+            background-color: #fff !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,.04);
+            border-bottom: 1px solid var(--bs-border-color);
+        }
+
+        .navbar-brand {
+            color: #343a40;
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        .page-title {
+            color: #212529;
+            font-weight: 700;
+            font-size: 1.75rem;
+        }
+
+        .btn {
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-primary {
+            background-color: var(--main-purple);
+            border-color: var(--main-purple);
+        }
+        .btn-primary:hover {
+            background-color: #5849b6;
+            border-color: #5849b6;
+        }
+
+        /* Bootstrap Table Customization */
+        .card {
+            border: 1px solid var(--bs-border-color);
+            border-radius: 0.75rem;
+            box-shadow: none;
+        }
+        .bootstrap-table .fixed-table-container {
+            border: none;
+        }
+        .table {
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .table thead th {
+            background-color: #F8F9FA;
+            border-bottom: 1px solid var(--bs-border-color) !important;
+            color: #6c757d;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .table tbody td {
+            border-top: 1px solid var(--bs-border-color) !important;
+            vertical-align: middle;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa !important;
+        }
+
+        .fixed-table-toolbar {
+            padding: 0.75rem;
+        }
+        .fixed-table-toolbar .search-input {
+            border-radius: 0.5rem !important;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--bs-border-color);
+        }
+        .fixed-table-toolbar .search-input:focus {
+            border-color: var(--main-purple);
+            box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.2);
+        }
+
+        .pagination .page-link {
+            color: #6c757d;
+            border-radius: 0.5rem;
+            margin: 0 3px;
+            border: 1px solid var(--bs-border-color);
+        }
+        .pagination .page-link:hover {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: var(--main-purple);
+            border-color: var(--main-purple);
+            color: white;
+        }
+
+        /* Status & Action Buttons */
+        .badge {
+            font-weight: 500;
+            padding: 0.5em 0.9em;
+        }
+        .badge.bg-status-active {
+            background-color: #e7f5ec !important;
+            color: #099250;
+        }
+        .badge.bg-status-inactive {
+            background-color: #f8f9fa !important;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+        }
+
+        .action-buttons .btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0 2px;
+            background-color: transparent;
+            border: 1px solid transparent;
+            color: #6c757d;
+        }
+        .action-buttons .btn:hover {
+            background-color: #e9ecef;
+            color: #212529;
+        }
+
+        /* Modal styles */
+        #globalModal .modal-content { border-radius: 0.75rem; border: none; box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1); }
+        #globalModal .modal-header { border-bottom: 1px solid var(--bs-border-color); padding: 1.25rem; }
+        #globalModal .modal-title { color: #212529; font-weight: 600; }
+        #globalModal .modal-body { padding: 1.5rem; }
+        #globalModal .modal-footer { background-color: #f8f9fa; border-top: 1px solid var(--bs-border-color); padding: 1rem; gap: 0.5rem; border-bottom-left-radius: 0.75rem; border-bottom-right-radius: 0.75rem;}
+    </style>
 </head>
-<body class="bg-light">
-<div class="container py-5">
-    <h2 class="mb-4">사용자 목록</h2>
-    <div class="mb-3 text-end">
-        <button class="btn btn-primary" id="useradd">+ 사용자 추가</button>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light">
+  <div class="container">
+    <a class="navbar-brand" href="#"><i class="bi bi-shield-check me-2"></i>Admin Panel</a>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/login.html">Logout <i class="bi bi-box-arrow-right ms-1"></i></a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title mb-0">사용자 목록</h2>
+        <button class="btn btn-primary" id="useradd"><i class="bi bi-plus-lg me-2"></i>사용자 추가</button>
     </div>
-    <div class="table-responsive">
-        <table id="userTable"
-               class="table table-bordered table-hover align-middle"
-               data-toggle="table"
-               data-search="true"
-               data-pagination="true"
-               data-page-size="5">
-            <thead class="table-light">
-            <tr>
-                <th data-field="role" data-sortable="true">권한</th>
-                <th data-field="userId" data-sortable="true" data-formatter="userIdFormatter">아이디</th>
-                <th data-field="username" data-sortable="true">이름</th>
-                <th data-field="email" data-sortable="true">이메일</th>
-                <th data-field="isActive" data-sortable="true">사용여부</th>
-                <th data-field="actions">관리</th> <!-- formatter 제거 -->
-            </tr>
-            </thead>
-        </table>
+    
+    <div class="card">
+        <div class="card-body p-0">
+            <table id="userTable"
+                   data-toggle="table"
+                   data-search="true"
+                   data-pagination="true"
+                   data-page-size="10"
+                   data-search-align="left"
+                   data-classes="table table-hover">
+                <thead>
+                <tr>
+                    <th data-field="role" data-sortable="true">권한</th>
+                    <th data-field="userId" data-sortable="true" data-formatter="userIdFormatter">아이디</th>
+                    <th data-field="username" data-sortable="true">이름</th>
+                    <th data-field="email" data-sortable="true">이메일</th>
+                    <th data-field="isActive" data-sortable="true" data-formatter="statusFormatter" data-align="center">사용여부</th>
+                    <th data-field="actions" data-align="center">관리</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -43,31 +211,38 @@
 <script>
     async function loadUserTable() {
       const users = await ApiUtil.get("/api/admin/user-list");
-
-      // 버튼 포함 HTML로 actions 필드 구성
       const usersWithAction = users.map(user => ({
         ...user,
-        actions: `<button class="btn btn-danger btn-sm static-delete-btn" data-userid="${user.userId}">삭제</button>`
+        actions: `
+            <div class="action-buttons">
+                <a href="/admin/user_detail.html?userId=${encodeURIComponent(user.userId)}" class="btn" title="수정">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <button class="btn static-delete-btn" data-userid="${user.userId}" title="삭제">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        `
       }));
-
       $("#userTable").bootstrapTable('load', usersWithAction);
-
-      setTimeout(() => {
-        document.querySelectorAll(".static-delete-btn").forEach(button => {
-          button.addEventListener("click", async function () {
-            const userId = this.dataset.userid;
-            console.log("🗑 삭제 버튼 클릭됨:", userId);
-            const confirmed = await AlertUtil.showConfirm("정말 삭제하시겠습니까?");
-            if (!confirmed) return;
-            await ApiUtil.del(`/api/admin/user-delete/${userId}`);
-            loadUserTable();
-          });
-        });
-      }, 0);
+      
+      $('.static-delete-btn').off('click').on('click', async function () {
+          const userId = $(this).data('userid');
+          const confirmed = await AlertUtil.showConfirm("정말 삭제하시겠습니까?");
+          if (!confirmed) return;
+          await ApiUtil.del(`/api/admin/user-delete/${userId}`);
+          loadUserTable();
+      });
     }
 
     function userIdFormatter(value, row) {
-      return `<a href="/admin/user_detail.html?userId=${encodeURIComponent(value)}" class="text-primary">${value}</a>`;
+      return `<a href="/admin/user_detail.html?userId=${encodeURIComponent(value)}" style="color: var(--main-purple); text-decoration: none; font-weight: 500;">${value}</a>`;
+    }
+    
+    function statusFormatter(value, row) {
+        const badgeClass = value ? 'bg-status-active' : 'bg-status-inactive';
+        const text = value ? '활성' : '비활성';
+        return `<span class="badge rounded-pill ${badgeClass}">${text}</span>`;
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -93,13 +268,10 @@
     `;
 
     document.getElementById('useradd').onclick = function () {
-      console.log("사용자 추가 버튼 클릭됨");
-
       Modal.showFormModal({
         title: '사용자 추가',
         formContent: formHtml,
         onConfirm: async function () {
-          console.log("모달 확인 버튼 클릭됨");
           const form = document.getElementById('addUserForm');
           const data = {
             userId: form.userId.value,
@@ -109,28 +281,29 @@
 
           const result = await ApiUtil.post('/api/admin/user-add', data);
           if (result) {
-            console.log("사용자 추가 성공");
             Modal.hideModal();
-            loadUserTable(); // reload instead of location.reload()
-          } else {
-            console.log("사용자 추가 실패");
+            loadUserTable();
           }
         }
       });
     };
 </script>
 
-<div id="globalModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1050;">
-    <div class="modal-content shadow bg-white rounded p-4 mx-auto mt-5" style="max-width: 500px;">
-        <div class="modal-header border-bottom-0">
-            <span class="modal-title fw-bold fs-5"></span>
-        </div>
-        <div class="modal-body mt-2"></div>
-        <div class="modal-footer border-top-0 d-flex justify-content-end mt-3">
-            <button id="modalConfirmBtn" class="btn btn-primary">확인</button>
-            <button type="button" class="btn btn-secondary" onclick="Modal.hideModal()">취소</button>
-        </div>
+<div class="modal fade" id="globalModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="Modal.hideModal()"></button>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="Modal.hideModal()">취소</button>
+        <button type="button" id="modalConfirmBtn" class="btn btn-primary">확인</button>
+      </div>
     </div>
+  </div>
 </div>
 
 </body>

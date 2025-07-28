@@ -5,50 +5,176 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>로그인</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --main-purple: #6A5ACD; /* SlateBlue */
+      --sub-pink: #FF69B4; /* HotPink */
+      --sub-yellow: #FFD700; /* Gold */
+      --bs-body-bg: #F8F9FA;
+      --bs-body-color: #212529;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background-color: var(--bs-body-bg);
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .card {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+    }
+
+    .card-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--main-purple);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .form-control {
+      border-radius: 0.75rem;
+      padding: 1rem;
+      border: 1px solid #ced4da;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--main-purple);
+      box-shadow: 0 0 0 0.25rem rgba(106, 90, 205, 0.25);
+    }
+
+    .btn {
+        border-radius: 0.75rem;
+        padding: 0.9rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--main-purple);
+      border-color: var(--main-purple);
+    }
+
+    .btn-primary:hover {
+      background-color: #5849b6;
+      border-color: #5849b6;
+      transform: translateY(-3px);
+    }
+
+    .btn-outline-secondary {
+      color: var(--sub-pink);
+      border-color: var(--sub-pink);
+    }
+
+    .btn-outline-secondary:hover {
+      background-color: var(--sub-pink);
+      color: white;
+      transform: translateY(-3px);
+    }
+
+    #globalModal .modal-dialog {
+        max-width: 420px;
+        margin-top: 50px
+    }
+    #globalModal .modal-content {
+        border-radius: 1rem;
+        border: none;
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+    }
+    #globalModal .modal-header {
+        border-bottom: none;
+        padding: 2rem 2rem 0.5rem 2rem;
+    }
+    #globalModal .modal-title {
+        color: var(--main-purple);
+        font-weight: 700;
+        font-size: 1.75rem;
+    }
+    #globalModal .modal-body {
+        padding: 1rem 2rem 2rem 2rem;
+    }
+    #globalModal .modal-footer {
+        border-top: none;
+        padding: 0 2rem 2rem 2rem;
+        gap: 0.75rem; /* Add gap between buttons */
+    }
+    #globalModal .modal-footer .btn {
+        flex: 1;
+    }
+
+    /* Remove inner box style */
+    #pwChangeForm {
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        margin-top: 1rem;
+    }
+    #pwChangeForm .form-label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+    
+  </style>
 </head>
-<body class="bg-light">
+<body>
 
   <!-- 로그인 박스 -->
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-md-5 col-lg-4">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h2 class="mb-4 text-center">로그인</h2>
+  <div class="login-container">
+    <div class="card shadow-sm">
+      <div class="card-body p-5">
+        <h2 class="card-title">로그인</h2>
 
-            <!-- 로그인 폼 -->
-            <form id="loginForm">
-              <div class="mb-3">
-                <input type="text" id="userId" class="form-control" placeholder="아이디" />
-              </div>
-              <div class="mb-4">
-                <input type="password" id="password" class="form-control" placeholder="비밀번호">
-              </div>
-              <button type="submit" class="btn btn-primary w-100">로그인</button>
-            </form>
-
-            <!-- 회원가입 버튼 -->
-            <div class="text-center mt-3">
-              <a href="/user/signup_jpa.html" class="btn btn-outline-secondary w-100">회원가입하기</a>
-            </div>
-
+        <!-- 로그인 폼 -->
+        <form id="loginForm">
+          <div class="mb-3">
+            <input type="text" id="userId" class="form-control" placeholder="아이디" />
           </div>
+          <div class="mb-4">
+            <input type="password" id="password" class="form-control" placeholder="비밀번호">
+          </div>
+          <button type="submit" class="btn btn-primary w-100">로그인</button>
+        </form>
+
+        <!-- 회원가입 버튼 -->
+        <div class="text-center mt-3">
+          <a href="/user/signup_jpa.html" class="btn btn-outline-secondary w-100">회원가입하기</a>
         </div>
+
       </div>
     </div>
   </div>
 
   <!-- 공통 모달 -->
   <div id="globalModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1050;">
-    <div class="modal-content shadow bg-white rounded p-4 mx-auto mt-5" style="max-width: 500px;">
-      <div class="modal-header border-bottom-0">
-        <span class="modal-title fw-bold fs-5"></span>
-      </div>
-      <div class="modal-body mt-2"></div>
-      <div class="modal-footer border-top-0 d-flex justify-content-end mt-3">
-        <button id="modalConfirmBtn" class="btn btn-primary">확인</button>
-        <button type="button" class="btn btn-secondary" onclick="Modal.hideModal()">취소</button>
-      </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold"></h5>
+            <button type="button" class="btn-close" onclick="Modal.hideModal()"></button>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="Modal.hideModal()">취소</button>
+            <button id="modalConfirmBtn" class="btn btn-primary">확인</button>
+          </div>
+        </div>
     </div>
   </div>
 
@@ -92,7 +218,7 @@
             <label class="form-label">새 비밀번호</label>
             <input type="password" id="newPassword" class="form-control" required />
           </div>
-          <div class="mb-3">
+          <div class="mb-4">
             <label class="form-label">비밀번호 확인</label>
             <input type="password" id="confirmPassword" class="form-control" required />
           </div>
@@ -135,3 +261,4 @@
 
 </body>
 </html>
+
